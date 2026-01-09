@@ -15,44 +15,44 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    category: 'Penghematan',
-    question: 'Berapa lama balik modal kalau beli motor listrik?',
-    answer: 'Dengan penghematan rata-rata Rp 400rb-500rb per bulan untuk pengemudi aktif, balik modal dalam 12-18 bulan tergantung model yang dipilih. Untuk ojol driver yang jalan 1000km+/bulan, bisa lebih cepat lagi.',
+    category: 'Baterai',
+    question: 'Apa jaminan untuk baterai?',
+    answer: 'Baterai Wedison dilindungi garansi 3 tahun. Kami menggunakan baterai LiFePO4 berkualitas tinggi yang aman dan tahan lama, dengan masa pakai hingga 2000+ siklus pengisian.',
   },
   {
-    category: 'Penggunaan',
-    question: 'Bisa untuk ojol full-time nggak?',
-    answer: 'Sangat bisa! Model EdPower dengan range 135km per charge sangat cocok untuk ojol full-time. Dengan SuperCharge 15 menit, Anda bisa charge sambil istirahat makan siang dan lanjut narik. Banyak driver kami yang pakai full-time dengan pendapatan lebih tinggi karena biaya operasional rendah.',
+    category: 'Baterai',
+    question: 'Bagaimana cara menjaga baterai dalam kondisi baik?',
+    answer: 'Hindari mengisi daya hingga 100% atau mengosongkan hingga 0% secara rutin. Idealnya jaga level baterai antara 20-80%. Simpan di tempat sejuk dan hindari paparan panas berlebih. Gunakan charger resmi Wedison.',
   },
   {
-    category: 'Charging',
-    question: 'Charging di mana? Ada stasiun charging publik?',
-    answer: 'Anda bisa charging di rumah dengan charger standar (4-5 jam) atau di stasiun SuperCharge kami (15 menit ke 80%). Saat ini sudah ada 20+ stasiun SuperCharge di Jabodetabek, dan terus bertambah. Lokasi bisa dicek di aplikasi Wedison.',
+    category: 'Pengisian Daya',
+    question: 'Berapa lama waktu mengisi baterai hingga penuh?',
+    answer: 'Dengan charger standar di rumah, pengisian penuh membutuhkan 2-4 jam tergantung model. Dengan teknologi SuperCharge di stasiun kami, hanya butuh 15 menit untuk mengisi dari 10% ke 80%.',
   },
   {
-    category: 'Biaya',
-    question: 'Berapa biaya maintenance motor listrik?',
-    answer: 'Jauh lebih murah dari motor bensin! Tidak perlu ganti oli, busi, atau filter udara. Maintenance rutin hanya cek rem dan ban. Estimasi biaya maintenance 60-70% lebih rendah dari motor bensin.',
-  },
-  {
-    category: 'Subsidi',
-    question: 'Ada subsidi pemerintah untuk motor listrik?',
-    answer: 'Ya! Pemerintah memberikan subsidi hingga Rp 8 juta untuk pembelian motor listrik baru. Syaratnya adalah memiliki KTP Indonesia dan belum pernah menerima subsidi motor listrik sebelumnya. Tim kami akan bantu prosesnya.',
-  },
-  {
-    category: 'Pembayaran',
-    question: 'Bisa kredit? Berapa DP minimalnya?',
-    answer: 'Bisa! Kami bekerja sama dengan berbagai leasing untuk cicilan hingga 36 bulan. DP minimal 10% atau bahkan DP 0% untuk program tertentu. Cicilan mulai dari Rp 400rb/bulan untuk model Mini.',
+    category: 'Pengisian Daya',
+    question: 'Di mana saya bisa mengisi daya?',
+    answer: 'Anda bisa mengisi daya di rumah dengan charger standar, atau di stasiun SuperCharge Wedison yang tersebar di berbagai lokasi strategis. Lokasi stasiun bisa dicek melalui aplikasi Wedison.',
   },
   {
     category: 'Performa',
-    question: 'Kuat untuk naik tanjakan dan boncengan?',
-    answer: 'Kuat! Motor Wedison dilengkapi motor BLDC bertenaga yang bisa menanjak hingga 15 derajat dengan boncengan. Torsi instan dari motor listrik membuat akselerasi lebih responsif dibanding motor bensin.',
+    question: 'Apakah kuat untuk naik tanjakan dan boncengan?',
+    answer: 'Ya! Motor Wedison dilengkapi motor BLDC bertenaga yang mampu menanjak hingga 15 derajat dengan boncengan. Torsi instan dari motor listrik memberikan akselerasi yang responsif.',
   },
   {
-    category: 'Garansi',
-    question: 'Garansi berapa lama? Kalau baterai rusak bagaimana?',
-    answer: 'Garansi baterai 3 tahun dan motor 2 tahun. Jika ada masalah, bisa langsung bawa ke showroom atau hubungi layanan servis kami. Untuk baterai, kami juga menyediakan opsi sewa baterai yang lebih terjangkau.',
+    category: 'Garansi & Layanan',
+    question: 'Bagaimana dengan garansi dan layanan servis?',
+    answer: 'Garansi baterai 3 tahun dan motor 2 tahun. Untuk servis dan perbaikan, Anda bisa mengunjungi Experience Center kami atau menghubungi layanan pelanggan. Biaya maintenance jauh lebih rendah karena tidak perlu ganti oli, busi, atau filter.',
+  },
+  {
+    category: 'Pembelian',
+    question: 'Apakah ada subsidi pemerintah?',
+    answer: 'Ya! Pemerintah memberikan subsidi hingga Rp 8 juta untuk pembelian motor listrik baru. Syaratnya memiliki KTP Indonesia dan belum pernah menerima subsidi motor listrik sebelumnya. Tim kami akan membantu prosesnya.',
+  },
+  {
+    category: 'Pembelian',
+    question: 'Apakah bisa cicilan? Berapa DP minimalnya?',
+    answer: 'Bisa! Kami bekerja sama dengan Kredivo dan leasing lainnya untuk cicilan hingga 36 bulan. DP mulai dari 10% dengan cicilan terjangkau mulai Rp 400rb/bulan untuk model Bees.',
   },
 ]
 
