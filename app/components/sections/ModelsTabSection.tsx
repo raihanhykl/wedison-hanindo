@@ -73,34 +73,32 @@ export default function ModelsTabSection() {
   return (
     <section 
       id="models" 
-      className="py-12 md:py-20 bg-white scroll-mt-16"
+      className="py-12 md:py-20 bg-white scroll-mt-16 relative overflow-hidden"
     >
-      {/* Content Container dengan background image per model */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Background Image dengan opacity 15% */}
+      {/* Background Image dengan opacity 15% - Full Section Viewport */}
+      <motion.div
+        key={activeModel.id}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.15 }}
+        transition={{ duration: 0.5 }}
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: `url(${modelImagePath})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      
+      {/* Content Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
         <motion.div
-          key={activeModel.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: `url(${modelImagePath})`,
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-        
-        {/* Content dengan relative positioning */}
-        <div className="relative z-10">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-10"
+        >
           <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
             Pilihan Model
           </span>
@@ -111,10 +109,10 @@ export default function ModelsTabSection() {
           <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
             Hemat hingga Rp 500rb/bulan dengan model yang sesuai kebutuhan Anda
           </p>
-          </motion.div>
+        </motion.div>
 
-          {/* Model Cards - Mobile Horizontal Scroll */}
-          <div className="mb-8 overflow-x-auto -mx-4 px-4 pb-4 md:overflow-visible md:mx-0 md:px-0">
+        {/* Model Cards - Mobile Horizontal Scroll */}
+        <div className="mb-8 overflow-x-auto -mx-4 px-4 pb-4 md:overflow-visible md:mx-0 md:px-0">
           <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-4 min-w-max md:min-w-0">
             {mainModels.map((model, index) => {
               const modelBestFor = BEST_FOR[model.id]
@@ -163,12 +161,12 @@ export default function ModelsTabSection() {
                 </button>
               )
             })}
-            </div>
           </div>
+        </div>
 
-          {/* Variant Selection */}
-          {activeMainModel.hasExtended && (
-            <div className="flex justify-center gap-3 mb-8">
+        {/* Variant Selection */}
+        {activeMainModel.hasExtended && (
+          <div className="flex justify-center gap-3 mb-8">
             <button
               onClick={() => setSelectedVariant('regular')}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
@@ -189,11 +187,11 @@ export default function ModelsTabSection() {
             >
               Extended (Baterai Lebih Besar)
             </button>
-            </div>
-          )}
+          </div>
+        )}
 
-          {/* Model Detail Card */}
-          <AnimatePresence mode="wait">
+        {/* Model Detail Card */}
+        <AnimatePresence mode="wait">
           <motion.div
             key={activeModel.id}
             initial={{ opacity: 0, y: 20 }}
@@ -357,8 +355,7 @@ export default function ModelsTabSection() {
               </div>
             </div>
           </motion.div>
-          </AnimatePresence>
-        </div>
+        </AnimatePresence>
       </div>
     </section>
   )

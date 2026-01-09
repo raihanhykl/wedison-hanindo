@@ -9,6 +9,9 @@ import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 // Model efficiency in km/kWh
+// Formula: Efficiency = Range (km) / Battery Capacity (kWh)
+// Battery Capacity (kWh) = (Ah × Voltage) / 1000
+// Contoh: EdPower = 70Ah × 48V = 3.36 kWh, Range 135km → 135/3.36 = 40.18 km/kWh
 const calculateEfficiency = (rangeKm: number, batteryAh: number, voltage: number = 48): number => {
   const batteryKWh = (batteryAh * voltage) / 1000
   return rangeKm / batteryKWh
@@ -244,7 +247,11 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
     pertamax: { name: 'Pertamax', price: 13000 },
   }
 
-  const electricityPrice = 1444 // Rp per kWh
+  // Tarif listrik PLN R1 1.300VA+ (paling umum di Indonesia)
+  // Sumber: Tarif listrik PLN 2024-2025 untuk rumah tangga
+  // R1 1.300VA: Rp 1.444,70/kWh | R1 2.200VA: Rp 1.444,70/kWh
+  // Rata-rata tarif rumah tangga: Rp 1.445/kWh (dibulatkan)
+  const electricityPrice = 1445 // Rp per kWh (tarif R1 1.300VA+ yang paling umum)
 
   const actualModelId = selectedVariant === 'extended' && MODEL_SPECS.find((m) => m.id === selectedModel)?.hasExtended
     ? MODEL_SPECS.find((m) => m.id === selectedModel)?.extendedId || selectedModel

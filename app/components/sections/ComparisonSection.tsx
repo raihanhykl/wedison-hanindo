@@ -155,7 +155,11 @@ export default function ComparisonSection() {
     pertamax: { name: 'Pertamax', price: 13000 },
   }
 
-  const electricityPrice = 1444 // Rp per kWh
+  // Tarif listrik PLN R1 1.300VA+ (paling umum di Indonesia)
+  // Sumber: Tarif listrik PLN 2024-2025 untuk rumah tangga
+  // R1 1.300VA: Rp 1.444,70/kWh | R1 2.200VA: Rp 1.444,70/kWh
+  // Rata-rata tarif rumah tangga: Rp 1.445/kWh (dibulatkan)
+  const electricityPrice = 1445 // Rp per kWh (tarif R1 1.300VA+ yang paling umum)
 
   const actualModelId = selectedVariant === 'extended' && MODEL_SPECS.find((m) => m.id === selectedModel)?.hasExtended
     ? MODEL_SPECS.find((m) => m.id === selectedModel)?.extendedId || selectedModel
