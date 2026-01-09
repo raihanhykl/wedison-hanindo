@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiChevronRight, FiChevronLeft, FiCheck } from 'react-icons/fi'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
@@ -446,6 +446,66 @@ export default function FinancingSection() {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({})
 
+  // Pre-load all model images (including variants) to detect load state reliably
+  useEffect(() => {
+    const imagesToPreload: Array<{ key: string; path: string }> = []
+    
+    // Pre-load main model images
+    uniqueModels.forEach((model, index) => {
+      const imageKey = `model-${model.model}-${index}`
+      const imagePath = getModelImagePath(model.model)
+      if (imagePath.startsWith('/images/models/')) {
+        imagesToPreload.push({ key: imageKey, path: imagePath })
+      }
+      
+      // Also pre-load extended variant if available
+      if (model.hasExtended) {
+        const extendedImageKey = `variant-extended-${model.model}`
+        const extendedImagePath = getModelImagePath(model.model, 'extended')
+        if (extendedImagePath.startsWith('/images/models/')) {
+          imagesToPreload.push({ key: extendedImageKey, path: extendedImagePath })
+        }
+        
+        // Pre-load regular variant too
+        const regularImageKey = `variant-regular-${model.model}`
+        const regularImagePath = getModelImagePath(model.model, 'regular')
+        if (regularImagePath.startsWith('/images/models/')) {
+          imagesToPreload.push({ key: regularImageKey, path: regularImagePath })
+        }
+      }
+    })
+    
+    // Pre-load all images
+    imagesToPreload.forEach(({ key, path }) => {
+      const img = new Image()
+      
+      // Handle cached images
+      const handleLoad = () => {
+        setImageLoaded(prev => ({ ...prev, [key]: true }))
+        setImageErrors(prev => ({ ...prev, [key]: false }))
+      }
+      
+      const handleError = () => {
+        setImageErrors(prev => ({ ...prev, [key]: true }))
+        setImageLoaded(prev => ({ ...prev, [key]: false }))
+      }
+      
+      img.onload = handleLoad
+      img.onerror = handleError
+      img.src = path
+      
+      // Check if image is already cached (complete immediately)
+      if (img.complete) {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          handleLoad()
+        } else {
+          handleError()
+        }
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Only run once on mount
+
   // Get current model data
   const activeMainModel = selectedModel !== null ? uniqueModels[selectedModel] : null
   const currentModel = activeMainModel && selectedVariant === 'extended' && activeMainModel.hasExtended
@@ -601,13 +661,17 @@ export default function FinancingSection() {
                             src={imageError ? `https://source.unsplash.com/featured/400x300/?motorcycle,electric,${model.model.toLowerCase()}` : modelImagePath}
                             alt={model.model}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            onError={() => {
+                            onError={(e) => {
                               setImageErrors(prev => ({ ...prev, [imageKey]: true }))
                               setImageLoaded(prev => ({ ...prev, [imageKey]: false }))
                             }}
-                            onLoad={() => {
-                              setImageLoaded(prev => ({ ...prev, [imageKey]: true }))
-                              setImageErrors(prev => ({ ...prev, [imageKey]: false }))
+                            onLoad={(e) => {
+                              // Also check if image is actually loaded (for cached images)
+                              const target = e.currentTarget as HTMLImageElement
+                              if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                                setImageLoaded(prev => ({ ...prev, [imageKey]: true }))
+                                setImageErrors(prev => ({ ...prev, [imageKey]: false }))
+                              }
                             }}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -677,9 +741,13 @@ export default function FinancingSection() {
                                     setImageErrors(prev => ({ ...prev, [variantImageKey]: true }))
                                     setImageLoaded(prev => ({ ...prev, [variantImageKey]: false }))
                                   }}
-                                  onLoad={() => {
-                                    setImageLoaded(prev => ({ ...prev, [variantImageKey]: true }))
-                                    setImageErrors(prev => ({ ...prev, [variantImageKey]: false }))
+                                  onLoad={(e) => {
+                                    // Check if image is actually loaded (for cached images)
+                                    const target = e.currentTarget as HTMLImageElement
+                                    if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                                      setImageLoaded(prev => ({ ...prev, [variantImageKey]: true }))
+                                      setImageErrors(prev => ({ ...prev, [variantImageKey]: false }))
+                                    }
                                   }}
                                 />
                               </>
@@ -725,9 +793,13 @@ export default function FinancingSection() {
                                     setImageErrors(prev => ({ ...prev, [variantImageKey]: true }))
                                     setImageLoaded(prev => ({ ...prev, [variantImageKey]: false }))
                                   }}
-                                  onLoad={() => {
-                                    setImageLoaded(prev => ({ ...prev, [variantImageKey]: true }))
-                                    setImageErrors(prev => ({ ...prev, [variantImageKey]: false }))
+                                  onLoad={(e) => {
+                                    // Check if image is actually loaded (for cached images)
+                                    const target = e.currentTarget as HTMLImageElement
+                                    if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                                      setImageLoaded(prev => ({ ...prev, [variantImageKey]: true }))
+                                      setImageErrors(prev => ({ ...prev, [variantImageKey]: false }))
+                                    }
                                   }}
                                 />
                               </>

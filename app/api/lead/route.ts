@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { CONTACT } from '@/utils/constants'
 
+// Cloudflare Pages requires Edge Runtime for API routes
+// For local development, you can comment this out to use Node.js runtime
+// Uncomment before deploying to Cloudflare
+export const runtime = 'edge'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -16,6 +21,20 @@ export async function POST(request: NextRequest) {
 
     // Format email content
     const emailSubject = `New Lead from Wedison Landing Page - ${name}`
+    
+    // Edge Runtime compatible date formatting
+    const now = new Date()
+    const dateFormatter = new Intl.DateTimeFormat('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+    const formattedDate = dateFormatter.format(now)
+    
     const emailBody = `
 New Lead Submission from Wedison Landing Page
 
@@ -25,7 +44,7 @@ Customer Information:
 - Location: ${location}
 - Program Interest: ${program}
 
-Submitted at: ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
+Submitted at: ${formattedDate}
     `.trim()
 
     // TODO: Integrate with email service (Nodemailer, SendGrid, Resend, etc.)

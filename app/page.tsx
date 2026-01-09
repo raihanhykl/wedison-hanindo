@@ -25,12 +25,14 @@ export default function Home() {
       {/* Models Tab Section */}
       <ModelsTabSection />
       
+      {/* Financing Section */}
+      <FinancingSection />
+      
       {/* <ProblemSection /> */} {/* Hidden - not needed for now */}
       <PersonasSection />
       <ShowroomSection />
       <InfrastructureSection />
       <TestimonialsSection />
-      <FinancingSection />
       <FAQSection />
       <LeadFormSection />
       <Footer />

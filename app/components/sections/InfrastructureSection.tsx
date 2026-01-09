@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiMapPin } from 'react-icons/fi'
 
@@ -15,6 +15,30 @@ const getHomeChargingImagePath = (): string => {
 export default function InfrastructureSection() {
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+
+  // Check if image exists and loaded
+  useEffect(() => {
+    const imagePath = getHomeChargingImagePath()
+    const img = new Image()
+    img.src = imagePath
+    
+    // Handle cached images
+    if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      setImageLoaded(true)
+      setImageError(false)
+      return
+    }
+    
+    img.onload = () => {
+      setImageLoaded(true)
+      setImageError(false)
+    }
+    img.onerror = () => {
+      setImageError(true)
+      setImageLoaded(false)
+    }
+  }, [])
+
   const benefits = [
     'Unified charging experience',
     'Loyalty points & rewards',
@@ -141,13 +165,17 @@ export default function InfrastructureSection() {
               src={getHomeChargingImagePath()}
               alt=""
               className="hidden"
-              onError={() => {
+              onError={(e) => {
                 setImageError(true)
                 setImageLoaded(false)
               }}
-              onLoad={() => {
-                setImageLoaded(true)
-                setImageError(false)
+              onLoad={(e) => {
+                // Check if image is actually loaded (for cached images)
+                const target = e.target as HTMLImageElement
+                if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                  setImageLoaded(true)
+                  setImageError(false)
+                }
               }}
             />
             

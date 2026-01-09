@@ -1,11 +1,9 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
-import { BsWhatsapp, BsInstagram, BsTiktok, BsYoutube, BsLinkedin } from 'react-icons/bs'
+import { BsWhatsapp } from 'react-icons/bs'
 import Logo from '../ui/Logo'
 import { CONTACT } from '@/utils/constants'
-import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -17,31 +15,7 @@ export default function Footer() {
       { label: 'Victory', href: '#specs' },
       { label: 'Mini', href: '#specs' },
     ],
-    company: [
-      { label: 'About Wedison', href: '#' },
-      { label: 'Blog & News', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Contact', href: '#showroom' },
-    ],
-    support: [
-      { label: 'Service Centers', href: '#showroom' },
-      { label: 'Charging Network', href: '#infrastructure' },
-      { label: 'Warranty Info', href: '#specs' },
-      { label: 'FAQ', href: '#' },
-    ],
-    legal: [
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Terms of Service', href: '#' },
-      { label: 'Cookie Policy', href: '#' },
-    ],
   }
-  
-  const socialMedia = [
-    { icon: <BsInstagram />, label: 'Instagram', href: 'https://instagram.com/wedison' },
-    { icon: <BsTiktok />, label: 'TikTok', href: 'https://tiktok.com/@wedison' },
-    { icon: <BsYoutube />, label: 'YouTube', href: 'https://youtube.com/@wedison' },
-    { icon: <BsLinkedin />, label: 'LinkedIn', href: 'https://linkedin.com/company/wedison' },
-  ]
   
   return (
     <footer className="bg-slate-900 text-white pt-16 pb-8">
@@ -51,7 +25,7 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="mb-2">
-              <Logo size="xlarge" showText={false} />
+              <Logo size="xlarge" showText={false} className="justify-start" />
             </div>
             <p className="text-slate-400 mb-6 leading-relaxed">
               Motor listrik pertama dengan SuperCharge technology di Indonesia. 
@@ -106,69 +80,9 @@ export default function Footer() {
           </div>
         </div>
         
-        {/* Newsletter Signup (Optional) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-slate-800 rounded-xl p-6 mb-12"
-        >
-          <div className="grid md:grid-cols-2 gap-6 items-center">
-            <div>
-              <h4 className="font-bold text-xl mb-2">Subscribe to Updates</h4>
-              <p className="text-slate-400 text-sm">
-                Get latest news, promos, & charging tips
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="flex-1 px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-electric-blue"
-              />
-              <button className="px-6 py-3 bg-electric-blue text-white font-semibold rounded-lg hover:shadow-lg transition-all">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </motion.div>
-        
-        {/* Social Media & Legal Links */}
+        {/* Copyright */}
         <div className="border-t border-slate-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            {/* Social Media */}
-            <div className="flex items-center gap-4">
-              {socialMedia.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="text-slate-400 hover:text-electric-blue transition-colors text-2xl"
-                  aria-label={social.label}
-                >
-                  {social.icon}
-                </motion.a>
-              ))}
-            </div>
-            
-            {/* Legal Links */}
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-400">
-              {quickLinks.legal.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="hover:text-white transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          
-          {/* Copyright */}
-          <div className="text-center mt-8 text-sm text-slate-500">
+          <div className="text-center text-sm text-slate-500">
             <p>© {currentYear} PT Wedison Indonesia. All rights reserved.</p>
             <p className="mt-1">Built for better mobility</p>
           </div>

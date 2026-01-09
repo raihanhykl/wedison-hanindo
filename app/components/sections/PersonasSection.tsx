@@ -26,8 +26,17 @@ export default function PersonasSection() {
   
   // Check if image exists and loaded
   useEffect(() => {
+    const imagePath = getPersonasImagePath()
     const img = new Image()
-    img.src = getPersonasImagePath()
+    img.src = imagePath
+    
+    // Handle cached images
+    if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      setImageLoaded(true)
+      setImageError(false)
+      return
+    }
+    
     img.onload = () => {
       setImageLoaded(true)
       setImageError(false)

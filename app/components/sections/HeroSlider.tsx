@@ -130,6 +130,29 @@ export default function HeroSlider() {
 
   const currentSlideData = slides[currentSlide]
 
+  // Check if hero image is already loaded (cached) to hide placeholder badge
+  useEffect(() => {
+    if (currentSlideData.type === 'image' && currentSlideData.src.startsWith('/images/hero-slider/')) {
+      const img = new Image()
+      img.src = currentSlideData.src
+      
+      // Check if image is already cached
+      if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+        const placeholderBadge = document.getElementById(`placeholder-badge-${currentSlide}`)
+        if (placeholderBadge) {
+          placeholderBadge.style.display = 'none'
+        }
+      } else {
+        img.onload = () => {
+          const placeholderBadge = document.getElementById(`placeholder-badge-${currentSlide}`)
+          if (placeholderBadge) {
+            placeholderBadge.style.display = 'none'
+          }
+        }
+      }
+    }
+  }, [currentSlide, currentSlideData.src, currentSlideData.type])
+
   // Handle ESC key to close modal
   useEffect(() => {
     if (!isImageModalOpen) return
@@ -173,14 +196,6 @@ export default function HeroSlider() {
               </video>
             ) : (
               <div className="relative h-full w-full">
-                {/* Placeholder Badge - akan hilang otomatis jika gambar berhasil load */}
-                <div 
-                  id={`placeholder-badge-${currentSlide}`}
-                  className="absolute top-4 left-4 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm shadow-lg border-2 border-yellow-600"
-                >
-                  PLACEHOLDER IMAGE - Upload actual asset
-                </div>
-                
                 {/* Background Image - menggunakan img tag untuk better control */}
                 <img
                   src={currentSlideData.src}
@@ -195,18 +210,38 @@ export default function HeroSlider() {
                       const randomKeyword = unsplashKeywords[Math.floor(Math.random() * unsplashKeywords.length)]
                       target.src = `https://source.unsplash.com/featured/1920x1080/?${randomKeyword},motorcycle`
                     }
+                    // Hide placeholder badge jika error
+                    if (typeof document !== 'undefined') {
+                      const placeholderBadge = document.getElementById(`placeholder-badge-${currentSlide}`)
+                      if (placeholderBadge) {
+                        placeholderBadge.style.display = 'none'
+                      }
+                    }
                   }}
                   onLoad={(e) => {
                     // Jika image berhasil load, hide placeholder badge
                     if (typeof document !== 'undefined') {
                       const placeholderBadge = document.getElementById(`placeholder-badge-${currentSlide}`)
-                      if (placeholderBadge && e.currentTarget.src.includes('/images/hero-slider/')) {
+                      const target = e.currentTarget as HTMLImageElement
+                      // Check if image is actually loaded (handle cached images)
+                      if (placeholderBadge && target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
                         // Hanya hide jika menggunakan local image (bukan Unsplash)
-                        placeholderBadge.style.display = 'none'
+                        if (target.src.includes('/images/hero-slider/')) {
+                          placeholderBadge.style.display = 'none'
+                        }
                       }
                     }
                   }}
                 />
+                {/* Placeholder Badge - akan hilang otomatis jika gambar berhasil load */}
+                {currentSlideData.src.startsWith('/images/hero-slider/') && (
+                  <div 
+                    id={`placeholder-badge-${currentSlide}`}
+                    className="absolute top-4 left-4 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm shadow-lg border-2 border-yellow-600"
+                  >
+                    PLACEHOLDER IMAGE - Upload actual asset
+                  </div>
+                )}
                 
                 {/* Fallback Placeholder - hanya muncul jika image tidak load */}
                 <div 
@@ -226,8 +261,8 @@ export default function HeroSlider() {
             {/* Overlay Gradient - lebih gelap untuk readability teks */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
 
-            {/* Content Overlay - kembali ke tengah */}
-            <div className="absolute inset-0 flex items-center justify-center px-12 md:px-4">
+            {/* Content Overlay - kembali ke tengah dengan padding bottom untuk tab indicators */}
+            <div className="absolute inset-0 flex items-center justify-center px-12 md:px-4 pb-24 md:pb-32">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -272,7 +307,7 @@ export default function HeroSlider() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    className="flex flex-col sm:flex-row gap-4 items-center justify-center"
+                    className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-4 md:mb-0 relative z-30"
                   >
                     <a
                       href={currentSlideData.ctaLink}
@@ -335,7 +370,7 @@ export default function HeroSlider() {
       </button>
 
       {/* Model Indicators (Bottom Center) - Horizontal */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
+      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
         <div className="flex gap-2 bg-black/30 backdrop-blur-md rounded-full px-2 py-2">
           {slides.map((slide, index) => (
             <button

@@ -46,8 +46,10 @@ export default function Logo({ className = '', size = 'medium', showText = false
   // For SVG, we need to handle it differently (can't use Next.js Image for SVG)
   const logoPath = '/images/logo/wedison-logo.png'
 
+  // Default to center alignment unless overridden by className
+  const defaultJustify = className.includes('justify') ? '' : 'justify-center'
   return (
-    <Link href="/" className={`flex items-center justify-center ${className}`}>
+    <Link href="/" className={`flex items-center ${defaultJustify} ${className}`}>
       {/* Logo Image */}
       <div className={`relative ${sizeClasses[size]} flex-shrink-0 flex items-center justify-center overflow-hidden`}>
         {!imageError ? (

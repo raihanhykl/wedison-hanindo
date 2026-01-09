@@ -232,7 +232,15 @@ export default function ModelsTabSection() {
                   setImageError(true)
                   setImageLoaded(false)
                 }}
-                onLoad={() => {
+                onLoad={(e) => {
+                  // Check if image is actually loaded (for cached images)
+                  const target = e.target as HTMLImageElement
+                  if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                    setImageLoaded(true)
+                    setImageError(false)
+                  }
+                }}
+                onLoadingComplete={() => {
                   setImageLoaded(true)
                   setImageError(false)
                 }}
@@ -266,9 +274,13 @@ export default function ModelsTabSection() {
                   setImageError(true)
                   setImageLoaded(false)
                 }}
-                onLoad={() => {
-                  setImageLoaded(true)
-                  setImageError(false)
+                onLoad={(e) => {
+                  // Check if image is actually loaded (for cached images)
+                  const target = e.target as HTMLImageElement
+                  if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
+                    setImageLoaded(true)
+                    setImageError(false)
+                  }
                 }}
               />
               {/* Overlay untuk readability - lebih gelap untuk kontras teks */}
