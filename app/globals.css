@@ -19,12 +19,44 @@
 
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Mobile-first font size */
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1e293b;
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Mobile-First Typography */
+@layer base {
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold leading-tight;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl font-bold leading-tight;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl font-semibold;
+  }
+  
+  p {
+    @apply text-base leading-relaxed;
+  }
 }
 
 @layer utilities {
@@ -34,6 +66,43 @@ body {
   
   .bg-gradient-primary {
     background-image: linear-gradient(135deg, #0891B2, #06B6D4);
+  }
+  
+  /* Touch-friendly minimum sizes */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* Mobile section padding */
+  .section-padding {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+  
+  /* Container with mobile-first padding */
+  .container-mobile {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Safe area padding for mobile devices with notches */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-electric-blue to-cyan-500;
   }
 }
 
@@ -56,6 +125,26 @@ body {
   }
 }
 
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -64,8 +153,139 @@ body {
   animation: pulse-slow 2s ease-in-out infinite;
 }
 
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
 /* Backdrop blur support */
 .backdrop-blur-support {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  @apply appearance-none bg-transparent cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply h-3 rounded-full bg-slate-200;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-6 h-6 rounded-full bg-electric-blue shadow-lg cursor-pointer -mt-1.5 border-2 border-white;
+}
+
+input[type="range"]::-moz-range-track {
+  @apply h-3 rounded-full bg-slate-200;
+}
+
+input[type="range"]::-moz-range-thumb {
+  @apply w-6 h-6 rounded-full bg-electric-blue shadow-lg cursor-pointer border-2 border-white;
+}
+
+/* Focus styles for accessibility */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  @apply outline-none ring-2 ring-electric-blue ring-offset-2;
+}
+
+/* Better tap highlighting on mobile */
+button,
+a,
+[role="button"] {
+  -webkit-tap-highlight-color: rgba(8, 145, 178, 0.1);
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-padding-top: 80px; /* Account for fixed navbar */
+}
+
+/* Mobile card hover states - disable on touch */
+@media (hover: none) {
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+}
+
+/* Improve text rendering */
+.text-rendering-optimize {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loading skeleton animation */
+@keyframes skeleton {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+}
+
+/* WhatsApp button pulse */
+@keyframes whatsapp-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
+  }
+}
+
+.whatsapp-pulse {
+  animation: whatsapp-pulse 2s infinite;
+}
+
+/* Ensure proper image aspect ratios */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+/* Mobile navigation safe areas */
+@supports (padding: max(0px)) {
+  .mobile-safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent content jumping during page load */
+.min-h-screen-safe {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Fix for iOS input zoom */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }

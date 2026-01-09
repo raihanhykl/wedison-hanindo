@@ -1,55 +1,94 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { BsWhatsapp } from 'react-icons/bs'
+import { FiX } from 'react-icons/fi'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
 import { trackWhatsAppClick } from '@/utils/analytics'
 
 export default function FloatingWhatsAppButton() {
-  const handleClick = () => {
-    trackWhatsAppClick('floating-button')
-  }
+  const [isVisible, setIsVisible] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  useEffect(() => {
+    // Show button after scrolling 300px
+    const handleScroll = () => {
+      setIsVisible(window.scrollY > 300)
+    }
+
+    // Initial check
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Show tooltip after 5 seconds if button is visible
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        setShowTooltip(true)
+      }, 5000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isVisible])
 
   return (
-    <motion.a
-      href={WHATSAPP_LINKS.general}
-      onClick={handleClick}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 1, type: 'spring', stiffness: 200 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      className="fixed bottom-6 right-6 z-50 bg-success-green text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all group"
-      aria-label="Chat WhatsApp"
-    >
-      {/* Pulse Animation */}
-      <motion.div
-        className="absolute inset-0 bg-success-green rounded-full"
-        animate={{
-          scale: [1, 1.3, 1.3],
-          opacity: [0.8, 0, 0],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeOut',
-        }}
-      />
-      
-      {/* WhatsApp Icon */}
-      <div className="relative z-10">
-        <BsWhatsapp className="text-3xl md:text-4xl" />
-      </div>
-      
-      {/* Tooltip - Desktop Only */}
-      <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-        <div className="bg-slate-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-semibold">
-          Chat WhatsApp
-          <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-slate-900"></div>
-        </div>
-      </div>
-    </motion.a>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          transition={{ duration: 0.3 }}
+          className="fixed bottom-6 right-6 z-50"
+        >
+          {/* Tooltip */}
+          <AnimatePresence>
+            {showTooltip && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                className="absolute bottom-full right-0 mb-3 bg-white rounded-lg shadow-xl p-4 w-64"
+              >
+                <button
+                  onClick={() => setShowTooltip(false)}
+                  className="absolute top-2 right-2 text-slate-400 hover:text-slate-600 transition-colors"
+                  aria-label="Close tooltip"
+                >
+                  <FiX className="text-lg" />
+                </button>
+                <p className="text-sm text-slate-700 pr-6">
+                  <span className="font-semibold">Butuh bantuan?</span>
+                  <br />
+                  Chat langsung dengan tim kami!
+                </p>
+                {/* Arrow */}
+                <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white transform rotate-45 shadow-lg" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* WhatsApp Button */}
+          <a
+            href={WHATSAPP_LINKS.general}
+            onClick={() => {
+              trackWhatsAppClick('floating-button')
+              setShowTooltip(false)
+            }}
+            className="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-success-green rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all"
+            aria-label="Chat WhatsApp"
+          >
+            <BsWhatsapp className="text-2xl md:text-3xl text-white" />
+            
+            {/* Pulse Animation */}
+            <span className="absolute inset-0 rounded-full bg-success-green animate-ping opacity-25" />
+          </a>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

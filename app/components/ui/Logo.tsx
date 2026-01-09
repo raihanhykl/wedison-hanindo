@@ -8,9 +8,11 @@ interface LogoProps {
   className?: string
   size?: 'small' | 'medium' | 'large' | 'xlarge'
   showText?: boolean
+  href?: string
+  onClick?: () => void
 }
 
-export default function Logo({ className = '', size = 'medium', showText = false }: LogoProps) {
+export default function Logo({ className = '', size = 'medium', showText = false, href = '/', onClick }: LogoProps) {
   const [imageError, setImageError] = useState(false)
 
   const sizeClasses = {
@@ -48,8 +50,20 @@ export default function Logo({ className = '', size = 'medium', showText = false
 
   // Default to center alignment unless overridden by className
   const defaultJustify = className.includes('justify') ? '' : 'justify-center'
-  return (
-    <Link href="/" className={`flex items-center ${defaultJustify} ${className}`}>
+  
+  const handleClick = (e: React.MouseEvent) => {
+    if (href === '#' || onClick) {
+      e.preventDefault()
+      if (onClick) {
+        onClick()
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+  }
+  
+  const logoContent = (
+    <>
       {/* Logo Image */}
       <div className={`relative ${sizeClasses[size]} flex-shrink-0 flex items-center justify-center overflow-hidden`}>
         {!imageError ? (
@@ -95,6 +109,24 @@ export default function Logo({ className = '', size = 'medium', showText = false
           WEDISON
         </span>
       )}
+    </>
+  )
+  
+  if (href === '#' || onClick) {
+    return (
+      <button
+        onClick={handleClick}
+        className={`flex items-center ${defaultJustify} ${className} cursor-pointer`}
+        aria-label="Scroll to top"
+      >
+        {logoContent}
+      </button>
+    )
+  }
+  
+  return (
+    <Link href={href} className={`flex items-center ${defaultJustify} ${className}`}>
+      {logoContent}
     </Link>
   )
 }

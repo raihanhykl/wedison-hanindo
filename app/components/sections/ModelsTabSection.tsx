@@ -4,218 +4,174 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { BsWhatsapp } from 'react-icons/bs'
-import { FiChevronDown, FiChevronUp, FiX, FiMaximize2 } from 'react-icons/fi'
+import { FiChevronDown, FiCheck, FiZap, FiBattery, FiDollarSign, FiUsers } from 'react-icons/fi'
 import Button from '../ui/Button'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
 import { trackWhatsAppClick } from '@/utils/analytics'
 import { MODEL_SPECS, type ModelSpec } from '@/utils/modelSpecs'
 
-// Helper function to get model image path - supports multiple extensions
+// Best For badges for each model
+const BEST_FOR: Record<string, { label: string; icon: typeof FiUsers }> = {
+  edpower: { label: 'Pengemudi Ojol Profesional', icon: FiUsers },
+  athena: { label: 'Daily Commuter', icon: FiUsers },
+  victory: { label: 'Budget-Conscious', icon: FiDollarSign },
+  mini: { label: 'City Rider', icon: FiZap },
+}
+
+// Monthly savings estimate per model
+const MONTHLY_SAVINGS: Record<string, number> = {
+  edpower: 500000, // Rp 500rb/bulan
+  athena: 350000,
+  'athena-extended': 400000,
+  victory: 350000,
+  'victory-extended': 400000,
+  mini: 250000,
+}
+
 const getModelImagePath = (modelId: string): string => {
-  // Map model IDs to image file names - support .png, .jpg, .webp
-  // Priority: .png (if exists) > .jpg > .webp
-  const imageMap: Record<string, string[]> = {
-    'edpower': ['/images/models/edpower.png', '/images/models/edpower.jpg', '/images/models/edpower.webp'],
-    'athena': ['/images/models/athena.png', '/images/models/athena.jpg', '/images/models/athena.webp'],
-    'athena-extended': ['/images/models/athena-extended.png', '/images/models/athena-extended.jpg', '/images/models/athena-extended.webp'],
-    'victory': ['/images/models/victory.png', '/images/models/victory.jpg', '/images/models/victory.webp'],
-    'victory-extended': ['/images/models/victory-extended.png', '/images/models/victory-extended.jpg', '/images/models/victory-extended.webp'],
-    'mini': ['/images/models/mini.png', '/images/models/mini.jpg', '/images/models/mini.webp'],
+  const imageMap: Record<string, string> = {
+    'edpower': '/images/models/edpower.png',
+    'athena': '/images/models/athena.png',
+    'athena-extended': '/images/models/athena-extended.png',
+    'victory': '/images/models/victory.png',
+    'victory-extended': '/images/models/victory-extended.png',
+    'mini': '/images/models/mini.png',
   }
-  
-  // Return first path from array (will try .png first, then .jpg, then .webp)
-  // Browser will handle 404 if file doesn't exist, then fallback to Unsplash via onError
-  const paths = imageMap[modelId]
-  return paths ? paths[0] : `https://source.unsplash.com/featured/800x800/?electric,motorcycle,${modelId}`
+  return imageMap[modelId] || '/images/models/default.png'
 }
 
 export default function ModelsTabSection() {
-  // Filter only main models (not extended versions)
   const mainModels = MODEL_SPECS.filter((model) => !model.id.includes('-extended'))
   
   const [activeTab, setActiveTab] = useState(0)
   const [selectedVariant, setSelectedVariant] = useState<'regular' | 'extended'>('regular')
-  const [showTechnicalSpecs, setShowTechnicalSpecs] = useState(false)
-  const [showKeyFeatures, setShowKeyFeatures] = useState(false)
-  const [imageError, setImageError] = useState(false) // Track image load errors
-  const [imageLoaded, setImageLoaded] = useState(false) // Track successful image load
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false) // Modal untuk mobile image view
-  const [showSpecs, setShowSpecs] = useState(false) // Toggle untuk specs section
+  const [showSpecs, setShowSpecs] = useState(false)
+  const [imageError, setImageError] = useState(false)
   
   const activeMainModel = mainModels[activeTab]
   const activeModel = selectedVariant === 'extended' && activeMainModel.extendedId
     ? MODEL_SPECS.find((m) => m.id === activeMainModel.extendedId) || activeMainModel
     : activeMainModel
 
-  // Get image path for current model
   const modelImagePath = getModelImagePath(activeModel.id)
+  const bestFor = BEST_FOR[activeMainModel.id]
+  const monthlySavings = MONTHLY_SAVINGS[activeModel.id] || 300000
 
-  // Listen for model selection from hero section
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const handleModelSelect = (event: CustomEvent) => {
-      const modelId = event.detail.modelId
-      // Remove -extended suffix if present
-      const baseModelId = modelId.replace('-extended', '')
-      const modelIndex = mainModels.findIndex((model) => model.id === baseModelId)
-      if (modelIndex !== -1) {
-        setActiveTab(modelIndex)
-        setSelectedVariant(modelId.includes('-extended') ? 'extended' : 'regular')
-        // Update URL hash
-        window.history.pushState(null, '', `#models-${modelId}`)
-      }
-    }
-
-    // Listen for custom event
-    window.addEventListener('selectModel', handleModelSelect as EventListener)
-
-    // Also check URL hash on mount
-    const checkHash = () => {
-      const hash = window.location.hash
-      if (hash.startsWith('#models-')) {
-        const modelId = hash.replace('#models-', '')
-        const baseModelId = modelId.replace('-extended', '')
-        const modelIndex = mainModels.findIndex((model) => model.id === baseModelId)
-        if (modelIndex !== -1) {
-          setActiveTab(modelIndex)
-          setSelectedVariant(modelId.includes('-extended') ? 'extended' : 'regular')
-        }
-      }
-    }
-
-    checkHash()
-    window.addEventListener('hashchange', checkHash)
-
-    return () => {
-      window.removeEventListener('selectModel', handleModelSelect as EventListener)
-      window.removeEventListener('hashchange', checkHash)
-    }
-  }, [mainModels])
-
-  // Reset accordion state when model changes
-  useEffect(() => {
-    setShowTechnicalSpecs(false)
-    setShowKeyFeatures(false)
-    setShowSpecs(false) // Reset specs visibility when model changes
-    setImageError(false) // Reset image error when model changes
-    setImageLoaded(false) // Reset image loaded state when model changes
+    setShowSpecs(false)
+    setImageError(false)
   }, [activeTab, selectedVariant])
 
-  // Handle ESC key to close image modal
-  useEffect(() => {
-    if (!isImageModalOpen) return
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsImageModalOpen(false)
-      }
-    }
-
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [isImageModalOpen])
-
-  // Define specs array
   const specs = [
-    { label: 'Battery Capacity', value: activeModel.battery },
-    { label: 'Range', value: activeModel.range },
-    { label: 'Motor Power', value: activeModel.motor },
+    { label: 'Range', value: activeModel.range, highlight: true },
+    { label: 'Battery', value: activeModel.battery },
+    { label: 'Motor', value: activeModel.motor },
     { label: 'Max Speed', value: activeModel.maxSpeed },
-    ...(activeModel.superCharge ? [{ label: 'SuperCharge', value: activeModel.superCharge }] : []),
+    ...(activeModel.superCharge ? [{ label: 'SuperCharge', value: activeModel.superCharge, highlight: true }] : []),
   ]
 
   return (
-    <section id="models" className="py-20 bg-white scroll-mt-20">
+    <section id="models" className="py-12 md:py-20 bg-white scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold text-slate-800 mb-4">
-            Pilih{' '}
-            <span className="text-electric-blue">
-              Model Wedison
-            </span>
+          <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
+            Pilihan Model
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
+            Mulai dari{' '}
+            <span className="text-success-green">Rp 15 Juta</span>
           </h2>
-          <p className="text-xl text-slate-600">
-            Lihat detail spesifikasi dan fitur setiap model
+          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
+            Hemat hingga Rp 500rb/bulan dengan model yang sesuai kebutuhan Anda
           </p>
         </motion.div>
 
-        {/* Tab Navigation */}
-        <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 border-b border-slate-200 overflow-x-auto mb-4">
-            {mainModels.map((model, index) => (
-              <button
-                key={model.id}
-                onClick={() => {
-                  setActiveTab(index)
-                  setSelectedVariant('regular') // Reset to regular when switching models
-                  // Update URL hash
-                  if (typeof window !== 'undefined') {
-                    window.history.pushState(null, '', `#models-${model.id}`)
-                  }
-                }}
-                className={`relative px-4 md:px-6 py-3 font-semibold transition-colors whitespace-nowrap ${
-                  activeTab === index
-                    ? 'text-electric-blue'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                {model.name}
-                {activeTab === index && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-1 bg-electric-blue"
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+        {/* Model Cards - Mobile Horizontal Scroll */}
+        <div className="mb-8 overflow-x-auto -mx-4 px-4 pb-4 md:overflow-visible md:mx-0 md:px-0">
+          <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-4 min-w-max md:min-w-0">
+            {mainModels.map((model, index) => {
+              const modelBestFor = BEST_FOR[model.id]
+              const modelSavings = MONTHLY_SAVINGS[model.id] || 300000
+              
+              return (
+                <button
+                  key={model.id}
+                  onClick={() => {
+                    setActiveTab(index)
+                    setSelectedVariant('regular')
+                  }}
+                  className={`relative w-[160px] md:w-auto p-4 rounded-2xl border-2 transition-all text-left ${
+                    activeTab === index
+                      ? 'border-electric-blue bg-electric-blue/5 shadow-lg'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
+                  }`}
+                >
+                  {/* Best For Badge */}
+                  {modelBestFor && (
+                    <span className={`absolute -top-2 left-4 px-2 py-0.5 text-xs font-semibold rounded-full ${
+                      activeTab === index
+                        ? 'bg-electric-blue text-white'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {modelBestFor.label}
+                    </span>
+                  )}
+                  
+                  <div className="pt-2">
+                    <h3 className={`text-lg font-bold ${
+                      activeTab === index ? 'text-electric-blue' : 'text-slate-800'
+                    }`}>
+                      {model.name}
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-2">{model.range}</p>
+                    <p className={`text-base font-bold ${
+                      activeTab === index ? 'text-success-green' : 'text-slate-700'
+                    }`}>
+                      {model.price}
+                    </p>
+                    <p className="text-xs text-success-green mt-1">
+                      Hemat ~Rp {(modelSavings / 1000).toFixed(0)}rb/bulan
+                    </p>
+                  </div>
+                </button>
+              )
+            })}
           </div>
-          
-          {/* Variant Selection (Regular/Extended) */}
-          {activeMainModel.hasExtended && (
-            <div className="flex justify-center gap-4 mt-4">
-              <button
-                onClick={() => {
-                  setSelectedVariant('regular')
-                  if (typeof window !== 'undefined') {
-                    window.history.pushState(null, '', `#models-${activeMainModel.id}`)
-                  }
-                }}
-                className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                  selectedVariant === 'regular'
-                    ? 'bg-electric-blue text-white shadow-md'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                Regular
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedVariant('extended')
-                  if (typeof window !== 'undefined') {
-                    window.history.pushState(null, '', `#models-${activeMainModel.extendedId}`)
-                  }
-                }}
-                className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                  selectedVariant === 'extended'
-                    ? 'bg-electric-blue text-white shadow-md'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                Extended <span className="text-xs opacity-80">(Baterai Lebih Besar)</span>
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Tab Content */}
+        {/* Variant Selection */}
+        {activeMainModel.hasExtended && (
+          <div className="flex justify-center gap-3 mb-8">
+            <button
+              onClick={() => setSelectedVariant('regular')}
+              className={`px-6 py-2 rounded-full font-medium transition-all ${
+                selectedVariant === 'regular'
+                  ? 'bg-electric-blue text-white shadow-md'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Regular
+            </button>
+            <button
+              onClick={() => setSelectedVariant('extended')}
+              className={`px-6 py-2 rounded-full font-medium transition-all ${
+                selectedVariant === 'extended'
+                  ? 'bg-electric-blue text-white shadow-md'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Extended (Baterai Lebih Besar)
+            </button>
+          </div>
+        )}
+
+        {/* Model Detail Card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeModel.id}
@@ -223,574 +179,150 @@ export default function ModelsTabSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="grid lg:grid-cols-2 gap-12"
+            className="bg-gradient-to-br from-slate-50 to-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden"
           >
-            {/* Left: Image/Visual - Desktop only, Mobile as background */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="hidden lg:block relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200"
-            >
-              {/* Placeholder Badge - hanya muncul jika menggunakan local image path dan belum load */}
-              {modelImagePath.startsWith('/images/models/') && !imageLoaded && !imageError && (
-                <div className="absolute top-4 left-4 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm shadow-lg border-2 border-yellow-600">
-                  PLACEHOLDER IMAGE - Upload actual asset
-                  <div className="text-xs mt-1 opacity-80">Path: {modelImagePath}</div>
+            <div className="grid lg:grid-cols-2">
+              {/* Left: Image */}
+              <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 p-8 flex items-center justify-center">
+                <div className="relative w-full h-full max-w-md">
+                  <Image
+                    src={imageError 
+                      ? `https://source.unsplash.com/featured/600x600/?electric,motorcycle,${activeModel.name.toLowerCase()}`
+                      : modelImagePath
+                    }
+                    alt={`${activeModel.name} - Wedison Electric Motorcycle`}
+                    fill
+                    className="object-contain"
+                    priority={activeTab === 0}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    onError={() => setImageError(true)}
+                  />
                 </div>
-              )}
-              <Image
-                src={imageError ? `https://source.unsplash.com/featured/800x800/?electric,motorcycle,${activeModel.name.toLowerCase()}` : modelImagePath}
-                alt={`${activeModel.name} - Wedison Electric Motorcycle`}
-                fill
-                className="object-cover"
-                priority={activeTab === 0}
-                sizes="50vw"
-                onError={() => {
-                  setImageError(true)
-                  setImageLoaded(false)
-                }}
-                onLoad={(e) => {
-                  // Check if image is actually loaded (for cached images)
-                  const target = e.target as HTMLImageElement
-                  if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
-                    setImageLoaded(true)
-                    setImageError(false)
-                  }
-                }}
-                onLoadingComplete={() => {
-                  setImageLoaded(true)
-                  setImageError(false)
-                }}
-                unoptimized={modelImagePath.startsWith('/images/models/') ? false : true}
-              />
-            </motion.div>
-
-            {/* Mobile: Background Image Container */}
-            <div
-              className="lg:hidden relative min-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200"
-              style={{
-                backgroundImage: `url(${imageError ? `https://source.unsplash.com/featured/800x800/?electric,motorcycle,${activeModel.name.toLowerCase()}` : modelImagePath})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
-              {/* Placeholder Badge - hanya muncul jika menggunakan local image path dan belum load */}
-              {modelImagePath.startsWith('/images/models/') && !imageLoaded && !imageError && (
-                <div className="absolute top-4 left-4 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm shadow-lg border-2 border-yellow-600">
-                  PLACEHOLDER IMAGE - Upload actual asset
-                  <div className="text-xs mt-1 opacity-80">Path: {modelImagePath}</div>
-                </div>
-              )}
-              {/* Hidden img tag untuk error handling dan load detection */}
-              <img
-                src={modelImagePath}
-                alt=""
-                className="hidden"
-                onError={() => {
-                  setImageError(true)
-                  setImageLoaded(false)
-                }}
-                onLoad={(e) => {
-                  // Check if image is actually loaded (for cached images)
-                  const target = e.target as HTMLImageElement
-                  if (target.complete && target.naturalWidth > 0 && target.naturalHeight > 0) {
-                    setImageLoaded(true)
-                    setImageError(false)
-                  }
-                }}
-              />
-              {/* Overlay untuk readability - lebih gelap untuk kontras teks */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/85" />
-            </div>
-
-            {/* Right: Specs & Details - Mobile overlay, Desktop normal */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="space-y-8 lg:relative relative -mt-[350px] lg:mt-0 z-10"
-            >
-              {/* Mobile: Solid background untuk konten agar teks mudah dibaca */}
-              <div className="lg:hidden bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-2xl border-2 border-slate-200 space-y-6">
-                {/* Header */}
-              <div>
-                <div className={`inline-block ${activeModel.badgeColor || 'bg-electric-blue'} text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 shadow-lg`}>
-                  {activeModel.badge}
-                </div>
-                <h3 className="text-4xl sm:text-5xl font-bold text-slate-800 mb-4">
-                  {activeModel.name}
-                </h3>
                 
-                {/* Button Lihat Detail Motor - Mobile Only */}
-                <button
-                  onClick={() => setIsImageModalOpen(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-electric-blue text-white font-semibold rounded-lg hover:bg-electric-blue/90 transition-all hover:scale-105 shadow-lg mb-4"
-                >
-                  <FiMaximize2 className="text-xl" />
-                  <span>Lihat Detail Motor</span>
-                </button>
-              </div>
-
-              {/* Key Specs Toggle Button */}
-              <div className="bg-slate-50 rounded-xl border-2 border-slate-200 overflow-hidden">
-                <button
-                  onClick={() => setShowSpecs(!showSpecs)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-100 transition-colors"
-                >
-                  <h4 className="text-xl font-bold text-slate-800">Spesifikasi</h4>
-                  <motion.div
-                    animate={{ rotate: showSpecs ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <FiChevronDown className="text-2xl text-slate-600" />
-                  </motion.div>
-                </button>
-
-                {/* Key Specs Grid - Collapsible */}
-                <AnimatePresence>
-                  {showSpecs && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-6 pt-0">
-                        <div className="grid grid-cols-2 gap-4">
-                          {specs.map((spec, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.1 + index * 0.05 }}
-                              className="bg-white rounded-xl p-6 border-2 border-slate-200"
-                            >
-                              <div className="text-sm text-slate-600 mb-2">{spec.label}</div>
-                              <div className="text-2xl font-bold text-slate-800">{spec.value}</div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Additional Technical Specs - Accordion */}
-              {(activeModel.acceleration || activeModel.braking || activeModel.suspension || activeModel.tire || activeModel.groundClearance || activeModel.weight || activeModel.warranty) && (
-                <div className="bg-slate-50 rounded-xl border-2 border-slate-200 overflow-hidden">
-                  {/* Accordion Header */}
-                  <button
-                    onClick={() => setShowTechnicalSpecs(!showTechnicalSpecs)}
-                    className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-100 transition-colors"
-                  >
-                    <h4 className="text-xl font-bold text-slate-800">Spesifikasi Teknis</h4>
-                    <motion.div
-                      animate={{ rotate: showTechnicalSpecs ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <FiChevronDown className="text-2xl text-slate-600" />
-                    </motion.div>
-                  </button>
-
-                  {/* Accordion Content */}
-                  <AnimatePresence>
-                    {showTechnicalSpecs && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-6 pb-6 space-y-6">
-                          {/* Performance & Handling */}
-                          {(activeModel.acceleration || activeModel.braking || activeModel.suspension) && (
-                            <div>
-                              <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Performance & Handling</h5>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                {activeModel.acceleration && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Akselerasi</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.acceleration}</span>
-                                  </div>
-                                )}
-                                {activeModel.braking && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Sistem Rem</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.braking}</span>
-                                  </div>
-                                )}
-                                {activeModel.suspension && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Suspensi</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.suspension}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Physical Specs */}
-                          {(activeModel.tire || activeModel.groundClearance || activeModel.weight) && (
-                            <div>
-                              <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Dimensi & Fisik</h5>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                {activeModel.tire && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Ukuran Ban</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.tire}</span>
-                                  </div>
-                                )}
-                                {activeModel.groundClearance && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Ground Clearance</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.groundClearance}</span>
-                                  </div>
-                                )}
-                                {activeModel.weight && (
-                                  <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                    <span className="text-slate-600 font-medium">Berat</span>
-                                    <span className="text-slate-800 text-right font-semibold">{activeModel.weight}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Warranty */}
-                          {activeModel.warranty && (
-                            <div>
-                              <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Garansi</h5>
-                              <div className="bg-success-green/10 rounded-lg p-4 border border-success-green/20">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-slate-800 font-semibold">{activeModel.warranty}</span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              )}
-
-              {/* Features List - Accordion */}
-              <div className="bg-slate-50 rounded-xl border-2 border-slate-200 overflow-hidden">
-                {/* Accordion Header */}
-                <button
-                  onClick={() => setShowKeyFeatures(!showKeyFeatures)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-100 transition-colors"
-                >
-                  <h4 className="text-xl font-bold text-slate-800">Key Features</h4>
-                  <motion.div
-                    animate={{ rotate: showKeyFeatures ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <FiChevronDown className="text-2xl text-slate-600" />
-                  </motion.div>
-                </button>
-
-                {/* Accordion Content */}
-                <AnimatePresence>
-                  {showKeyFeatures && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 pb-6">
-                        <div className="grid md:grid-cols-2 gap-3">
-                          {activeModel.features.map((feature, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.1 + index * 0.03 }}
-                              className="flex items-center gap-2"
-                            >
-                              <span className="text-slate-700">{feature}</span>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Financing CTA */}
-              <div className="bg-electric-blue/10 rounded-xl p-6 border-2 border-electric-blue/20">
-                <div className="text-center">
-                  <Button
-                    href="#financing"
-                    variant="outline"
-                    size="large"
-                    className="w-full"
-                  >
-                    <span>Cek Simulasi Kredit</span>
-                  </Button>
+                {/* Savings Badge */}
+                <div className="absolute top-4 left-4 bg-success-green text-white px-4 py-2 rounded-full shadow-lg">
+                  <span className="font-bold">Hemat ~Rp {(monthlySavings / 1000).toFixed(0)}rb/bulan</span>
                 </div>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  href={WHATSAPP_LINKS[activeModel.whatsappLink as keyof typeof WHATSAPP_LINKS] || WHATSAPP_LINKS.general}
-                  onClick={() => trackWhatsAppClick(`model-tab-${activeModel.id}`)}
-                  variant="primary"
-                  size="large"
-                  className="flex-1"
-                >
-                  <BsWhatsapp className="text-2xl" />
-                  <span>Chat WhatsApp - Info Lengkap</span>
-                </Button>
-                <Button
-                  href="#showroom"
-                  variant="outline"
-                  size="large"
-                  className="flex-1"
-                >
-                  <span>Test Drive</span>
-                </Button>
-              </div>
-              </div>
-
-              {/* Desktop: Normal container */}
-              <div className="hidden lg:block space-y-8">
+              {/* Right: Details */}
+              <div className="p-6 md:p-8 space-y-6">
                 {/* Header */}
                 <div>
-                  <div className={`inline-block ${activeModel.badgeColor || 'bg-electric-blue'} text-white px-4 py-2 rounded-full text-sm font-semibold mb-4`}>
+                  <div className={`inline-block ${activeModel.badgeColor || 'bg-electric-blue'} text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-3`}>
                     {activeModel.badge}
                   </div>
-                  <h3 className="text-4xl sm:text-5xl font-bold text-slate-800 mb-4">
+                  <h3 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
                     {activeModel.name}
                   </h3>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="text-2xl font-bold text-success-green">{activeModel.price}</span>
+                    <span className="text-sm text-slate-500 line-through">
+                      Rp {(parseInt(activeModel.price.replace(/[^0-9]/g, '')) + 8000000).toLocaleString('id-ID')}
+                    </span>
+                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-semibold">
+                      -Rp 8jt Subsidi
+                    </span>
+                  </div>
                 </div>
 
-                {/* Key Specs Toggle Button */}
-                <div className="bg-slate-50 rounded-xl border-2 border-slate-200 overflow-hidden">
+                {/* Quick Specs */}
+                <div className="grid grid-cols-2 gap-3">
+                  {specs.slice(0, 4).map((spec, index) => (
+                    <div
+                      key={index}
+                      className={`p-4 rounded-xl ${
+                        spec.highlight
+                          ? 'bg-electric-blue/10 border-2 border-electric-blue/20'
+                          : 'bg-slate-100'
+                      }`}
+                    >
+                      <div className="text-xs text-slate-600 mb-1">{spec.label}</div>
+                      <div className={`text-lg font-bold ${
+                        spec.highlight ? 'text-electric-blue' : 'text-slate-800'
+                      }`}>
+                        {spec.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Expandable Specs */}
+                <div className="border-2 border-slate-200 rounded-xl overflow-hidden">
                   <button
                     onClick={() => setShowSpecs(!showSpecs)}
-                    className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-100 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
                   >
-                    <h4 className="text-xl font-bold text-slate-800">Spesifikasi</h4>
+                    <span className="font-semibold text-slate-800">Lihat Spesifikasi Lengkap</span>
                     <motion.div
                       animate={{ rotate: showSpecs ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <FiChevronDown className="text-2xl text-slate-600" />
+                      <FiChevronDown className="text-xl text-slate-600" />
                     </motion.div>
                   </button>
 
-                  {/* Key Specs Grid - Collapsible */}
                   <AnimatePresence>
                     {showSpecs && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden border-t border-slate-200"
                       >
-                        <div className="p-6 pt-0">
-                          <div className="grid grid-cols-2 gap-4">
-                            {specs.map((spec, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.1 + index * 0.05 }}
-                                className="bg-white rounded-xl p-6 border-2 border-slate-200"
-                              >
-                                <div className="text-sm text-slate-600 mb-2">{spec.label}</div>
-                                <div className="text-2xl font-bold text-slate-800">{spec.value}</div>
-                              </motion.div>
-                            ))}
-                          </div>
+                        <div className="p-4 space-y-3">
+                          {activeModel.features.map((feature, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <FiCheck className="text-success-green flex-shrink-0" />
+                              <span className="text-sm text-slate-700">{feature}</span>
+                            </div>
+                          ))}
+                          {activeModel.warranty && (
+                            <div className="mt-4 pt-4 border-t border-slate-200">
+                              <div className="bg-success-green/10 rounded-lg p-3 text-sm text-success-green font-medium">
+                                Garansi: {activeModel.warranty}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                {/* Additional Technical Specs - Accordion */}
-                {(activeModel.acceleration || activeModel.braking || activeModel.suspension || activeModel.tire || activeModel.groundClearance || activeModel.weight || activeModel.warranty) && (
-                  <div className="bg-white rounded-xl border-2 border-slate-200 overflow-hidden">
-                    {/* Accordion Header */}
-                    <button
-                      onClick={() => setShowTechnicalSpecs(!showTechnicalSpecs)}
-                      className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors"
-                    >
-                      <h4 className="text-xl font-bold text-slate-800">Spesifikasi Teknis</h4>
-                      <motion.div
-                        animate={{ rotate: showTechnicalSpecs ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <FiChevronDown className="text-2xl text-slate-600" />
-                      </motion.div>
-                    </button>
-
-                    {/* Accordion Content */}
-                    <AnimatePresence>
-                      {showTechnicalSpecs && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
-                          className="overflow-hidden"
-                        >
-                          <div className="px-6 pb-6 space-y-6">
-                            {/* Performance & Handling */}
-                            {(activeModel.acceleration || activeModel.braking || activeModel.suspension) && (
-                              <div>
-                                <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Performance & Handling</h5>
-                                <div className="grid md:grid-cols-2 gap-4">
-                                  {activeModel.acceleration && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Akselerasi</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.acceleration}</span>
-                                    </div>
-                                  )}
-                                  {activeModel.braking && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Sistem Rem</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.braking}</span>
-                                    </div>
-                                  )}
-                                  {activeModel.suspension && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Suspensi</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.suspension}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Physical Specs */}
-                            {(activeModel.tire || activeModel.groundClearance || activeModel.weight) && (
-                              <div>
-                                <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Dimensi & Fisik</h5>
-                                <div className="grid md:grid-cols-2 gap-4">
-                                  {activeModel.tire && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Ukuran Ban</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.tire}</span>
-                                    </div>
-                                  )}
-                                  {activeModel.groundClearance && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Ground Clearance</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.groundClearance}</span>
-                                    </div>
-                                  )}
-                                  {activeModel.weight && (
-                                    <div className="flex justify-between items-start py-2 border-b border-slate-100">
-                                      <span className="text-slate-600 font-medium">Berat</span>
-                                      <span className="text-slate-800 text-right font-semibold">{activeModel.weight}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Warranty */}
-                            {activeModel.warranty && (
-                              <div>
-                                <h5 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Garansi</h5>
-                                <div className="bg-success-green/10 rounded-lg p-4 border border-success-green/20">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-slate-800 font-semibold">{activeModel.warranty}</span>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                )}
-
-                {/* Features List - Accordion */}
-                <div className="bg-white rounded-xl border-2 border-slate-200 overflow-hidden">
-                  {/* Accordion Header */}
-                  <button
-                    onClick={() => setShowKeyFeatures(!showKeyFeatures)}
-                    className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors"
-                  >
-                    <h4 className="text-xl font-bold text-slate-800">Key Features</h4>
-                    <motion.div
-                      animate={{ rotate: showKeyFeatures ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <FiChevronDown className="text-2xl text-slate-600" />
-                    </motion.div>
-                  </button>
-
-                  {/* Accordion Content */}
-                  <AnimatePresence>
-                    {showKeyFeatures && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-6 pb-6">
-                          <div className="grid md:grid-cols-2 gap-3">
-                            {activeModel.features.map((feature, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.1 + index * 0.03 }}
-                                className="flex items-center gap-2"
-                              >
-                                <span className="text-slate-700">{feature}</span>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Financing CTA */}
-                <div className="bg-gradient-to-br from-electric-blue/10 to-cyan-50 rounded-xl p-6 border-2 border-electric-blue/20">
-                  <div className="text-center">
+                {/* Financing Quick Info */}
+                <div className="bg-slate-100 rounded-xl p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-slate-600">Cicilan mulai</p>
+                      <p className="text-xl font-bold text-slate-800">{activeModel.monthly}/bulan</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-600">DP mulai</p>
+                      <p className="text-xl font-bold text-slate-800">{activeModel.dp}</p>
+                    </div>
                     <Button
                       href="#financing"
                       variant="outline"
-                      size="large"
-                      className="w-full"
+                      size="medium"
                     >
-                      <span>Cek Simulasi Kredit</span>
+                      Simulasi Cicilan
                     </Button>
                   </div>
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     href={WHATSAPP_LINKS[activeModel.whatsappLink as keyof typeof WHATSAPP_LINKS] || WHATSAPP_LINKS.general}
-                    onClick={() => trackWhatsAppClick(`model-tab-${activeModel.id}`)}
+                    onClick={() => trackWhatsAppClick(`model-${activeModel.id}`)}
                     variant="primary"
                     size="large"
                     className="flex-1"
                   >
-                    <BsWhatsapp className="text-2xl" />
-                    <span>Chat WhatsApp - Info Lengkap</span>
+                    <BsWhatsapp className="text-xl" />
+                    <span>Info Lengkap</span>
                   </Button>
                   <Button
                     href="#showroom"
@@ -798,75 +330,14 @@ export default function ModelsTabSection() {
                     size="large"
                     className="flex-1"
                   >
-                    <span>Test Drive</span>
+                    Test Drive
                   </Button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Image Modal/Popup - Mobile Only */}
-      <AnimatePresence>
-        {isImageModalOpen && (
-          <motion.div
-            key="image-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm lg:hidden"
-            onClick={() => setIsImageModalOpen(false)}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-4 right-4 z-50 bg-white/20 hover:bg-white/30 backdrop-blur-md p-3 rounded-full transition-all hover:scale-110 text-white"
-              aria-label="Close modal"
-            >
-              <FiX className="text-2xl" />
-            </button>
-
-            {/* Image Container */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-full max-h-[90vh] w-full h-full flex items-center justify-center"
-              onClick={(e) => e.stopPropagation()} // Prevent close when clicking on image
-            >
-              <img
-                src={imageError ? `https://source.unsplash.com/featured/800x800/?electric,motorcycle,${activeModel.name.toLowerCase()}` : modelImagePath}
-                alt={`${activeModel.name} - Wedison Electric Motorcycle`}
-                className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
-              />
-            </motion.div>
-
-            {/* Model Info Overlay */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center text-white bg-black/50 backdrop-blur-md px-6 py-3 rounded-lg"
-            >
-              <div className="font-bold text-lg">{activeModel.name}</div>
-            </motion.div>
-
-            {/* Instruction Text */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="absolute top-20 left-1/2 -translate-x-1/2 text-white/80 text-sm text-center"
-            >
-              Klik di luar gambar atau tekan X untuk menutup
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
     </section>
   )
 }

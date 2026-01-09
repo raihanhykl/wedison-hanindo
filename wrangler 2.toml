@@ -1,0 +1,17 @@
+# Cloudflare Pages configuration for Next.js with @cloudflare/next-on-pages
+
+name = "wedison-hanindo"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[env.production]
+compatibility_flags = ["nodejs_compat"]
+
+[env.preview]
+compatibility_flags = ["nodejs_compat"]
+
+# Build configuration
+# Build command: npm run pages:build
+# Build output directory: .vercel/output/static
+# Root directory: (leave empty)
