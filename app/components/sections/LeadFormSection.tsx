@@ -50,8 +50,10 @@ export default function LeadFormSection() {
         body: JSON.stringify(formData),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to submit')
+        throw new Error(data.error || data.details || 'Failed to submit')
       }
 
       setIsSubmitted(true)
@@ -63,7 +65,11 @@ export default function LeadFormSection() {
         model: '',
       })
     } catch (err) {
-      setError('Gagal mengirim data. Silakan coba lagi atau hubungi via WhatsApp.')
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'Gagal mengirim data. Silakan coba lagi atau hubungi via WhatsApp.'
+      setError(errorMessage)
+      console.error('Form submission error:', err)
     } finally {
       setIsSubmitting(false)
     }
@@ -149,7 +155,7 @@ export default function LeadFormSection() {
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-600 mb-2">
                     Nama Lengkap *
                   </label>
                   <div className="relative">
@@ -161,7 +167,7 @@ export default function LeadFormSection() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-800"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-700 bg-white"
                       placeholder="Nama Anda"
                     />
                   </div>
@@ -169,7 +175,7 @@ export default function LeadFormSection() {
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-medium text-slate-600 mb-2">
                     Nomor WhatsApp *
                   </label>
                   <div className="relative">
@@ -181,7 +187,7 @@ export default function LeadFormSection() {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-800"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-700 bg-white"
                       placeholder="08xxxxxxxxxx"
                     />
                   </div>
@@ -189,7 +195,7 @@ export default function LeadFormSection() {
 
                 {/* Location */}
                 <div>
-                  <label htmlFor="location" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="location" className="block text-sm font-medium text-slate-600 mb-2">
                     Kota/Daerah *
                   </label>
                   <div className="relative">
@@ -201,7 +207,7 @@ export default function LeadFormSection() {
                       value={formData.location}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-800"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-700 bg-white"
                       placeholder="Jakarta, Tangerang, dll"
                     />
                   </div>
@@ -209,7 +215,7 @@ export default function LeadFormSection() {
 
                 {/* Program */}
                 <div>
-                  <label htmlFor="program" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="program" className="block text-sm font-medium text-slate-600 mb-2">
                     Program yang Diminati *
                   </label>
                   <div className="relative">
@@ -220,7 +226,7 @@ export default function LeadFormSection() {
                       value={formData.program}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-800 bg-white appearance-none"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-700 bg-white appearance-none"
                     >
                       <option value="">Pilih program</option>
                       <option value="cash">Cash / Tunai</option>
@@ -233,7 +239,7 @@ export default function LeadFormSection() {
 
               {/* Model Selection */}
               <div>
-                <label htmlFor="model" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="model" className="block text-sm font-medium text-slate-600 mb-2">
                   Model yang Diminati
                 </label>
                 <select
@@ -241,7 +247,7 @@ export default function LeadFormSection() {
                   name="model"
                   value={formData.model}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-800 bg-white"
+                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-electric-blue transition-colors text-slate-700 bg-white"
                 >
                   <option value="">Pilih model (opsional)</option>
                   {mainModels.map((model) => (
