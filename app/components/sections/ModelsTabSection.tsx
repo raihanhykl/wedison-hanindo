@@ -191,9 +191,9 @@ export default function ModelsTabSection() {
             transition={{ duration: 0.3 }}
             className="bg-gradient-to-br from-slate-50 to-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden"
           >
-            <div className="grid lg:grid-cols-2">
+            <div className="flex flex-col lg:grid lg:grid-cols-2">
               {/* Left: Image */}
-              <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 p-8 flex items-center justify-center">
+              <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 p-4 sm:p-6 md:p-8 flex items-center justify-center">
                 <div className="relative w-full h-full max-w-md">
                   <div className="relative w-full h-full overflow-hidden rounded-lg">
                     <Image
@@ -213,7 +213,7 @@ export default function ModelsTabSection() {
               </div>
 
               {/* Right: Details */}
-              <div className="p-4 sm:p-6 md:p-8 space-y-6">
+              <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
                 {/* Header */}
                 <div>
                   <div className={`inline-block ${activeModel.badgeColor || 'bg-electric-blue'} text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-3`}>
