@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-import { FiBattery, FiZap, FiTruck, FiUser, FiCheck, FiClock, FiStar, FiChevronLeft, FiChevronRight, FiChevronDown, FiMapPin, FiCalendar } from 'react-icons/fi'
+import { FiBattery, FiZap, FiTruck, FiUser, FiCheck, FiClock, FiStar, FiChevronLeft, FiChevronRight, FiMapPin, FiCalendar, FiDollarSign, FiPercent } from 'react-icons/fi'
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { WHATSAPP_LINKS } from '@/utils/whatsappLinks'
@@ -222,7 +222,9 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
   // Savings Stories states
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [imageError, setImageError] = useState<Record<string, boolean>>({})
-  const [isStoriesExpanded, setIsStoriesExpanded] = useState(false)
+  
+  // Tab navigation state
+  const [activeTab, setActiveTab] = useState<'kalkulator' | 'cerita' | 'harga'>('kalkulator')
 
   // Handle preset change
   useEffect(() => {
@@ -273,11 +275,9 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
   const selectedModelData = MODEL_SPECS.find((m) => m.id === actualModelId) || MODEL_SPECS[0]
   const currentMainModel = MODEL_SPECS.find((m) => m.id === selectedModel) || MODEL_SPECS[0]
 
-  // ROI calculation (months to break even)
-  const modelPrice = parseInt(selectedModelData.price.replace(/[^0-9]/g, ''))
-  const subsidy = 8000000
-  const priceAfterSubsidy = modelPrice - subsidy
-  const roiMonths = Math.ceil(priceAfterSubsidy / monthlySavings)
+  // Total Hemat calculation
+  const SAVINGS_YEARS = 5
+  const totalSavings = Math.round(yearlySavings * SAVINGS_YEARS)
 
   const activeStory = STORIES[activeStoryIndex]
 
@@ -311,7 +311,95 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
           </p>
         </motion.div>
 
-        {/* Calculator Card */}
+        {/* Tab Navigation */}
+        <div className="flex justify-center mb-8">
+          <motion.div 
+            className="inline-flex bg-white rounded-2xl p-1.5 shadow-lg border-2 border-slate-100 gap-1"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <motion.button
+              onClick={() => setActiveTab('kalkulator')}
+              whileTap={{ scale: 0.95 }}
+              animate={activeTab !== 'kalkulator' ? {
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 0 0 rgba(59, 130, 246, 0)',
+                  '0 0 0 4px rgba(59, 130, 246, 0.15)',
+                  '0 0 0 0 rgba(59, 130, 246, 0)'
+                ]
+              } : {}}
+              transition={activeTab !== 'kalkulator' ? {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              } : { type: "spring", stiffness: 400, damping: 17 }}
+              className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all text-sm md:text-base cursor-pointer ${
+                activeTab === 'kalkulator'
+                  ? 'bg-electric-blue text-white shadow-md'
+                  : 'text-slate-700 bg-slate-50 border-2 border-slate-200 hover:border-electric-blue hover:bg-slate-100'
+              }`}
+            >
+              <FiPercent className="text-lg" />
+              <span>Kalkulator</span>
+            </motion.button>
+            <motion.button
+              onClick={() => setActiveTab('cerita')}
+              whileTap={{ scale: 0.95 }}
+              animate={activeTab !== 'cerita' ? {
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 0 0 rgba(34, 197, 94, 0)',
+                  '0 0 0 4px rgba(34, 197, 94, 0.15)',
+                  '0 0 0 0 rgba(34, 197, 94, 0)'
+                ]
+              } : {}}
+              transition={activeTab !== 'cerita' ? {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              } : { type: "spring", stiffness: 400, damping: 17 }}
+              className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all text-sm md:text-base cursor-pointer ${
+                activeTab === 'cerita'
+                  ? 'bg-success-green text-white shadow-md'
+                  : 'text-slate-700 bg-slate-50 border-2 border-slate-200 hover:border-success-green hover:bg-slate-100'
+              }`}
+            >
+              <FiStar className="text-lg" />
+              <span className="hidden sm:inline">Cerita Pengguna</span>
+              <span className="sm:hidden">Cerita</span>
+            </motion.button>
+            <motion.button
+              onClick={() => setActiveTab('harga')}
+              whileTap={{ scale: 0.95 }}
+              animate={activeTab !== 'harga' ? {
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 0 0 rgba(34, 197, 94, 0)',
+                  '0 0 0 4px rgba(34, 197, 94, 0.15)',
+                  '0 0 0 0 rgba(34, 197, 94, 0)'
+                ]
+              } : {}}
+              transition={activeTab !== 'harga' ? {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              } : { type: "spring", stiffness: 400, damping: 17 }}
+              className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all text-sm md:text-base cursor-pointer ${
+                activeTab === 'harga'
+                  ? 'bg-success-green text-white shadow-md'
+                  : 'text-slate-700 bg-slate-50 border-2 border-slate-200 hover:border-success-green hover:bg-slate-100'
+              }`}
+            >
+              <FiDollarSign className="text-lg" />
+              <span>Harga</span>
+            </motion.button>
+          </motion.div>
+        </div>
+
+        {/* Calculator Card - shown when kalkulator tab active */}
+        <div className={activeTab !== 'kalkulator' ? 'hidden' : ''}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -550,9 +638,9 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                   </p>
                 </div>
                 <div className="bg-slate-100 rounded-xl p-4 text-center">
-                  <p className="text-slate-600 text-sm mb-1">Balik Modal</p>
+                  <p className="text-slate-600 text-sm mb-1">Total Hemat 5 Tahun</p>
                   <p className="text-xl font-bold text-electric-blue">
-                    ~{roiMonths} bulan
+                    Rp {totalSavings.toLocaleString('id-ID')}
                   </p>
                 </div>
               </div>
@@ -663,49 +751,12 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
             )}
           </AnimatePresence>
         </motion.div>
+        </div>
 
-        {/* Cerita Nyata - Accordion */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-8"
-        >
-          <button
-            onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
-            className="w-full bg-white rounded-2xl shadow-lg border-2 border-slate-200 hover:border-electric-blue transition-all p-6 flex items-center justify-between group"
-          >
-            {/* Accordion Header */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-success-green/10 rounded-xl flex items-center justify-center">
-                <FiStar className="text-yellow-400 fill-current text-xl" />
-              </div>
-              <div className="text-left">
-                <h3 className="text-lg font-bold text-slate-800">Cerita Nyata Pengguna</h3>
-                <p className="text-sm text-slate-500">{STORIES.length} testimoni pengguna</p>
-              </div>
-            </div>
-            {/* Expand Icon */}
-            <motion.div
-              animate={{ rotate: isStoriesExpanded ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FiChevronDown className="text-2xl text-slate-400 group-hover:text-electric-blue transition-colors" />
-            </motion.div>
-          </button>
-
-          {/* Accordion Content */}
-          <AnimatePresence>
-            {isStoriesExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                {/* Story Card - Compact Version */}
-                <div className="mt-4 bg-white rounded-2xl shadow-lg border-2 border-slate-100 overflow-hidden">
+        {/* Cerita Pengguna Tab - shown when cerita tab active */}
+        <div className={activeTab !== 'cerita' ? 'hidden' : ''}>
+          {/* Story Card */}
+          <div className="bg-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden">
                   <div className="grid lg:grid-cols-2">
                     {/* Left: Profile & Quote - Compact */}
                     <div className="p-4 md:p-6 bg-gradient-to-br from-slate-50 to-white">
@@ -853,11 +904,94 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                       </AnimatePresence>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        </div>
+
+        {/* Harga Model Tab - shown when harga tab active */}
+        <div className={activeTab !== 'harga' ? 'hidden' : ''}>
+          <div className="bg-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden">
+            <div className="p-6 md:p-8">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
+                  Daftar Harga Model
+                </h3>
+                <p className="text-slate-600">
+                  Pilih model yang sesuai dengan kebutuhan Anda
+                </p>
+              </div>
+
+              {/* Price List - Grid with Images */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {mainModels.map((model) => {
+                  const imageMap: Record<string, string> = {
+                    'edpower': '/images/models/edpower.png',
+                    'athena': '/images/models/athena.png',
+                    'victory': '/images/models/victory.png',
+                    'bees': '/images/models/bees.png',
+                  }
+                  const imagePath = imageMap[model.id] || '/images/models/edpower.png'
+                  
+                  return (
+                    <div
+                      key={model.id}
+                      className="relative overflow-hidden rounded-2xl border-2 border-slate-200 hover:border-electric-blue transition-all hover:shadow-lg group"
+                    >
+                      {/* Background Image */}
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        style={{ 
+                          backgroundImage: `url(${imagePath})`,
+                          backgroundSize: '130%',
+                          backgroundPosition: 'center 35%',
+                        }}
+                      />
+                      
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/70 to-slate-900/50 group-hover:from-slate-900/98" />
+                      
+                      {/* Content */}
+                      <div className="relative z-10 p-4 pt-16 text-left min-h-[180px] flex flex-col justify-end">
+                        <h4 className="text-xl font-bold text-white mb-1">{model.name}</h4>
+                        <p className="text-sm text-white/80 mb-3">{model.range}</p>
+                        <div>
+                          <p className="text-2xl font-bold text-success-green">{model.price}</p>
+                          <p className="text-xs text-white/60 line-through">
+                            Rp {(parseInt(model.price.replace(/[^0-9]/g, '')) + 8000000).toLocaleString('id-ID')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Highlight Starting Price */}
+              <div className="bg-gradient-to-br from-success-green to-emerald-600 rounded-2xl p-6 text-white text-center mb-6">
+                <p className="text-white/80 text-sm mb-2">Mulai dari</p>
+                <p className="text-4xl md:text-5xl font-bold mb-2">Rp 15 Juta</p>
+                <p className="text-white/80">Setelah subsidi hingga Rp 8 Juta</p>
+              </div>
+
+              {/* CTA */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="#models"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-electric-blue text-white font-bold rounded-full hover:bg-blue-600 transition-all hover:scale-105 shadow-lg"
+                >
+                  <span>Lihat Detail Model</span>
+                </a>
+                <a
+                  href="#financing"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border-2 border-electric-blue text-electric-blue font-bold rounded-full hover:bg-electric-blue/5 transition-all"
+                >
+                  <FiDollarSign className="text-xl" />
+                  <span>Simulasi Cicilan</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -103,11 +103,11 @@ export default function ModelsTabSection() {
             Pilihan Model
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
-            Mulai dari{' '}
-            <span className="text-success-green">Rp 15 Juta</span>
+            Temukan Model{' '}
+            <span className="text-electric-blue">Sempurna</span>
           </h2>
           <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
-            Hemat hingga Rp 500rb/bulan dengan model yang sesuai kebutuhan Anda
+            Spesifikasi unggulan untuk kebutuhan harian maupun profesional
           </p>
         </motion.div>
 
@@ -149,12 +149,7 @@ export default function ModelsTabSection() {
                       {model.name}
                     </h3>
                     <p className="text-sm text-slate-500 mb-2">{model.range}</p>
-                    <p className={`text-base font-bold ${
-                      activeTab === index ? 'text-success-green' : 'text-slate-700'
-                    }`}>
-                      {model.price}
-                    </p>
-                    <p className="text-xs text-success-green mt-1">
+                    <p className="text-xs text-success-green">
                       Hemat ~Rp {(modelSavings / 1000).toFixed(0)}rb/bulan
                     </p>
                   </div>
@@ -234,15 +229,6 @@ export default function ModelsTabSection() {
                   <h3 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
                     {activeModel.name}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="text-2xl font-bold text-success-green">{activeModel.price}</span>
-                    <span className="text-sm text-slate-500 line-through">
-                      Rp {(parseInt(activeModel.price.replace(/[^0-9]/g, '')) + 8000000).toLocaleString('id-ID')}
-                    </span>
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-semibold">
-                      -Rp 8jt Subsidi
-                    </span>
-                  </div>
                 </div>
 
                 {/* Quick Specs */}
@@ -310,23 +296,19 @@ export default function ModelsTabSection() {
                   </AnimatePresence>
                 </div>
 
-                {/* Financing Quick Info */}
-                <div className="bg-slate-100 rounded-xl p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
+                {/* Financing Link */}
+                <div className="bg-gradient-to-br from-success-green/10 to-emerald-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-sm text-slate-600">Cicilan mulai</p>
-                      <p className="text-xl font-bold text-slate-800">{activeModel.monthly}/bulan</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-600">DP mulai</p>
-                      <p className="text-xl font-bold text-slate-800">{activeModel.dp}</p>
+                      <p className="text-sm font-semibold text-slate-800">Tertarik dengan model ini?</p>
+                      <p className="text-xs text-slate-600">Lihat harga, DP, dan simulasi cicilan</p>
                     </div>
                     <Button
                       href="#financing"
                       variant="outline"
                       size="medium"
                     >
-                      Simulasi Cicilan
+                      Lihat Harga & Cicilan
                     </Button>
                   </div>
                 </div>

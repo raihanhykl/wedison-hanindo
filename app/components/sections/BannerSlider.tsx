@@ -18,15 +18,6 @@ interface BannerSlide {
 
 const BANNER_SLIDES: BannerSlide[] = [
   {
-    id: 'subsidi',
-    image: '/images/hero-slider/hero-beli-subsidi.webp',
-    title: 'Subsidi hingga 8 Juta',
-    subtitle: 'DP 0% Tersedia • Cicilan Fleksibel',
-    ctaText: 'Info Subsidi',
-    ctaLink: WHATSAPP_LINKS.general,
-    alt: 'Subsidi Pemerintah Motor Listrik',
-  },
-  {
     id: 'sewa',
     image: '/images/hero-slider/hero-sewa.webp',
     title: 'Sewa Mulai Rp 50/Hari',

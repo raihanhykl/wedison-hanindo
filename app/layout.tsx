@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: 'Wedison - Motor Listrik Hemat BBM | SuperCharge 15 Menit',
     template: '%s | Wedison Motor Listrik',
   },
-  description: 'Hemat 60% biaya BBM dengan motor listrik Wedison. SuperCharge 15 menit, cicilan mulai Rp 400rb/bulan. DP 0% tersedia. Subsidi pemerintah Rp 8 juta.',
+  description: 'Hemat 60% biaya BBM dengan motor listrik Wedison. SuperCharge 15 menit, cicilan mulai Rp 400rb/bulan. DP 0% tersedia.',
   keywords: [
     'motor listrik',
     'motor listrik murah',
@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     'motor listrik jakarta',
     'cicilan motor listrik',
     'motor listrik ojol',
-    'motor listrik subsidi',
   ],
   authors: [{ name: 'Wedison Indonesia' }],
   creator: 'Wedison Indonesia',

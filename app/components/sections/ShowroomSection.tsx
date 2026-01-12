@@ -11,7 +11,7 @@ const SHOWROOM_FEATURES = [
   'Test drive semua model',
   'Konsultasi gratis',
   'Proses kredit di tempat',
-  'Subsidi langsung potong',
+  'Service dan after-sales',
 ]
 
 export default function ShowroomSection() {

@@ -181,11 +181,9 @@ export default function ComparisonSection() {
   const selectedModelData = MODEL_SPECS.find((m) => m.id === actualModelId) || MODEL_SPECS[0]
   const currentMainModel = MODEL_SPECS.find((m) => m.id === selectedModel) || MODEL_SPECS[0]
 
-  // ROI calculation (months to break even)
-  const modelPrice = parseInt(selectedModelData.price.replace(/[^0-9]/g, ''))
-  const subsidy = 8000000
-  const priceAfterSubsidy = modelPrice - subsidy
-  const roiMonths = Math.ceil(priceAfterSubsidy / monthlySavings)
+  // Total Hemat calculation
+  const SAVINGS_YEARS = 5
+  const totalSavings = Math.round(yearlySavings * SAVINGS_YEARS)
 
   return (
     <section id="comparison" className="py-12 md:py-20 bg-slate-50 scroll-mt-16">
@@ -448,9 +446,9 @@ export default function ComparisonSection() {
                   </p>
                 </div>
                 <div className="bg-slate-100 rounded-xl p-4 text-center">
-                  <p className="text-slate-600 text-sm mb-1">Balik Modal</p>
+                  <p className="text-slate-600 text-sm mb-1">Total Hemat 5 Tahun</p>
                   <p className="text-xl font-bold text-electric-blue">
-                    ~{roiMonths} bulan
+                    Rp {totalSavings.toLocaleString('id-ID')}
                   </p>
                 </div>
               </div>

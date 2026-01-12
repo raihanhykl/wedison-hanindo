@@ -40,18 +40,6 @@ export default function HeroSlider() {
       highlight: 'Promo Terbatas',
     },
     {
-      id: 'beli-subsidi',
-      type: 'image',
-      src: '/images/hero-slider/hero-beli-subsidi.webp',
-      model: 'Subsidi',
-      title: 'Subsidi hingga 8 Juta',
-      description: 'DP 0% Tersedia • Cicilan Fleksibel • Promo Khusus Terbatas',
-      price: 'Subsidi 8 Juta',
-      ctaText: 'Chat WhatsApp - Info Subsidi',
-      ctaLink: WHATSAPP_LINKS.general,
-      highlight: 'Subsidi Pemerintah',
-    },
-    {
       id: 'voucher-charging',
       type: 'image',
       src: '/images/hero-slider/hero-voucher-charging.webp',
