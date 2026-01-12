@@ -193,8 +193,8 @@ export default function ModelsTabSection() {
           >
             <div className="flex flex-col lg:grid lg:grid-cols-2">
               {/* Left: Image */}
-              <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 p-4 sm:p-6 md:p-8 flex items-center justify-center">
-                <div className="relative w-full h-full max-w-md">
+              <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 px-5 py-4 sm:px-6 sm:py-6 md:p-8 flex items-center justify-center">
+                <div className="relative w-full h-full max-w-md mx-auto">
                   <div className="relative w-full h-full overflow-hidden rounded-lg">
                     <Image
                       src={imageError 
