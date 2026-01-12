@@ -215,18 +215,18 @@ export default function FinancingSection() {
           className="text-center mb-8"
         >
           <span className="inline-block px-4 py-2 bg-success-green/20 text-success-green rounded-full text-sm font-semibold mb-4">
-            {paymentType === 'cicilan' ? 'x Kredivo' : 'Pembelian Cash'}
+            {paymentType === 'cicilan' ? 'Cicilan Kredivo' : 'Pembelian Cash'}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {paymentType === 'cicilan' ? (
-              <>Cicilan Ringan{' '}<span className="text-success-green">x Kredivo</span></>
+              <>Cicilan Ringan{' '}<span className="text-success-green">Cicilan Kredivo</span></>
             ) : (
               <>Beli Cash{' '}<span className="text-success-green">Lebih Hemat</span></>
             )}
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
             {paymentType === 'cicilan' 
-              ? 'Hitung simulasi cicilan x Kredivo dan lihat berapa yang bisa Anda hemat setiap bulan'
+              ? 'Hitung simulasi cicilan Kredivo dan lihat berapa yang bisa Anda hemat setiap bulan'
               : 'Dapatkan diskon spesial untuk pembelian langsung tanpa cicilan'
             }
           </p>
@@ -456,7 +456,7 @@ export default function FinancingSection() {
                 <div className="bg-electric-blue/20 rounded-xl p-4 border border-electric-blue/30">
                   <div className="flex items-center gap-2 mb-2">
                     <FiCheck className="text-electric-blue" />
-                    <span className="font-semibold text-electric-blue">x Kredivo</span>
+                    <span className="font-semibold text-electric-blue">Cicilan Kredivo</span>
                   </div>
                   <p className="text-sm text-slate-300">
                     Cicilan fleksibel dengan proses approval cepat
