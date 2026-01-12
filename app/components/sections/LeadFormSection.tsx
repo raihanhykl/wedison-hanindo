@@ -99,9 +99,8 @@ export default function LeadFormSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
@@ -146,9 +145,8 @@ export default function LeadFormSection() {
           </motion.div>
         ) : (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+          animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-3xl p-6 md:p-10 shadow-2xl"
           >
             <form onSubmit={handleSubmit} className="space-y-6">

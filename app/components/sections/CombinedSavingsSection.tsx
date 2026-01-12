@@ -294,9 +294,8 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10 md:mb-12"
         >
           <span className="inline-block px-4 py-2 bg-success-green/10 text-success-green rounded-full text-sm font-semibold mb-4">
@@ -315,9 +314,8 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
         <div className="flex justify-center mb-8">
           <motion.div 
             className="inline-flex bg-white rounded-2xl p-1.5 shadow-lg border-2 border-slate-100 gap-1"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+          animate={{ opacity: 1, y: 0 }}
           >
             <motion.button
               onClick={() => setActiveTab('kalkulator')}
@@ -376,14 +374,13 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
         {/* Calculator Card - shown when kalkulator tab active */}
         <div className={activeTab !== 'kalkulator' ? 'hidden' : ''}>
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden"
         >
           <div className="grid lg:grid-cols-2">
             {/* Left: Inputs */}
-            <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-slate-100">
+            <div className="p-4 sm:p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-slate-100">
               {/* Usage Presets */}
               <div className="mb-6">
                 <label className="block text-lg font-semibold text-slate-800 mb-3">
@@ -416,11 +413,11 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
 
               {/* Distance Slider */}
               <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <label htmlFor="distance-slider" className="text-base font-semibold text-slate-700">
+                <div className="flex justify-between items-center mb-2 gap-2">
+                  <label htmlFor="distance-slider" className="text-base font-semibold text-slate-700 flex-shrink-0">
                     Jarak per bulan
                   </label>
-                  <span className="text-2xl font-bold text-electric-blue">
+                  <span className="text-xl sm:text-2xl font-bold text-electric-blue flex-shrink-0">
                     {distance.toLocaleString('id-ID')} km
                   </span>
                 </div>
@@ -656,12 +653,12 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                 className="border-t border-slate-200 overflow-hidden"
               >
                 <div className="p-6 md:p-8 bg-gradient-to-br from-electric-blue/5 to-cyan-50">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-electric-blue rounded-xl flex items-center justify-center">
+                  <div className="flex items-center justify-between mb-6 gap-2">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 bg-electric-blue rounded-xl flex items-center justify-center flex-shrink-0">
                         <FiZap className="text-white text-xl" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <h4 className="text-xl font-bold text-slate-800">⚡ SuperCharge Technology</h4>
                         <p className="text-sm text-slate-600">12x lebih cepat dari motor listrik lain</p>
                       </div>
@@ -676,12 +673,12 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                     {/* Bar Chart Comparison */}
                     <div className="space-y-4">
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-success-green to-emerald-400" />
-                            <span className="text-sm font-semibold text-slate-700">Wedison SuperCharge</span>
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-success-green to-emerald-400 flex-shrink-0" />
+                            <span className="text-sm font-semibold text-slate-700 truncate">Wedison SuperCharge</span>
                           </div>
-                          <span className="text-lg font-bold text-success-green">15 menit</span>
+                          <span className="text-base sm:text-lg font-bold text-success-green flex-shrink-0">15 menit</span>
                         </div>
                         <div className="relative h-10 bg-slate-100 rounded-xl overflow-hidden">
                           <motion.div
@@ -696,12 +693,12 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                       </div>
 
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-500" />
-                            <span className="text-sm font-semibold text-slate-700">Motor Listrik Lain</span>
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-500 flex-shrink-0" />
+                            <span className="text-sm font-semibold text-slate-700 truncate">Motor Listrik Lain</span>
                           </div>
-                          <span className="text-lg font-bold text-red-500">180 menit</span>
+                          <span className="text-base sm:text-lg font-bold text-red-500 flex-shrink-0">180 menit</span>
                         </div>
                         <div className="relative h-10 bg-slate-100 rounded-xl overflow-hidden">
                           <motion.div

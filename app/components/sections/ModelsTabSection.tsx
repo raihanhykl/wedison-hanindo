@@ -94,9 +94,8 @@ export default function ModelsTabSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
           <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
@@ -111,9 +110,9 @@ export default function ModelsTabSection() {
           </p>
         </motion.div>
 
-        {/* Model Cards - Mobile Horizontal Scroll */}
-        <div className="mb-8 overflow-x-auto -mx-4 px-4 pb-4 md:overflow-visible md:mx-0 md:px-0">
-          <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-4 min-w-max md:min-w-0">
+        {/* Model Cards - Mobile Horizontal Scroll, Desktop Grid */}
+        <div className="mb-8 overflow-x-auto -mx-4 px-4 sm:px-6 pb-4 md:overflow-visible md:mx-0 md:px-0 scrollbar-hide pt-4 md:pt-0">
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 min-w-max md:min-w-0 md:max-w-5xl md:mx-auto">
             {mainModels.map((model, index) => {
               const modelBestFor = BEST_FOR[model.id]
               const modelSavings = MONTHLY_SAVINGS[model.id] || 300000
@@ -125,30 +124,30 @@ export default function ModelsTabSection() {
                     setActiveTab(index)
                     setSelectedVariant('regular')
                   }}
-                  className={`relative w-[160px] md:w-auto p-4 rounded-2xl border-2 transition-all text-left ${
+                  className={`relative w-[200px] flex-shrink-0 md:w-full p-4 md:p-5 pt-5 md:pt-5 rounded-2xl border-2 transition-all text-left ${
                     activeTab === index
-                      ? 'border-electric-blue bg-electric-blue/5 shadow-lg'
-                      : 'border-slate-200 bg-white hover:border-slate-300'
+                      ? 'border-electric-blue bg-electric-blue/5 shadow-lg md:shadow-xl'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
                   }`}
                 >
                   {/* Best For Badge */}
                   {modelBestFor && (
-                    <span className={`absolute -top-2 left-4 px-2 py-0.5 text-xs font-semibold rounded-full ${
+                    <div className={`absolute -top-2.5 left-2 right-2 px-2.5 py-1 text-xs sm:text-sm font-semibold rounded-full text-center md:text-left whitespace-nowrap overflow-hidden text-ellipsis ${
                       activeTab === index
-                        ? 'bg-electric-blue text-white'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}>
+                        ? 'bg-electric-blue text-white shadow-md'
+                        : 'bg-slate-100 text-slate-700 border border-slate-200'
+                    }`} title={modelBestFor.label}>
                       {modelBestFor.label}
-                    </span>
+                    </div>
                   )}
                   
-                  <div className="pt-2">
-                    <h3 className={`text-lg font-bold ${
+                  <div className="pt-3 md:pt-4">
+                    <h3 className={`text-lg md:text-xl font-bold ${
                       activeTab === index ? 'text-electric-blue' : 'text-slate-800'
                     }`}>
                       {model.name}
                     </h3>
-                    <p className="text-sm text-slate-500">{model.range}</p>
+                    <p className="text-sm md:text-base text-slate-500 mt-1">{model.range}</p>
                   </div>
                 </button>
               )
@@ -196,23 +195,25 @@ export default function ModelsTabSection() {
               {/* Left: Image */}
               <div className="relative aspect-square lg:aspect-auto bg-gradient-to-br from-slate-100 to-slate-200 p-8 flex items-center justify-center">
                 <div className="relative w-full h-full max-w-md">
-                  <Image
-                    src={imageError 
-                      ? `https://source.unsplash.com/featured/600x600/?electric,motorcycle,${activeModel.name.toLowerCase()}`
-                      : modelImagePath
-                    }
-                    alt={`${activeModel.name} - Wedison Electric Motorcycle`}
-                    fill
-                    className="object-contain"
-                    priority={activeTab === 0}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    onError={() => setImageError(true)}
-                  />
+                  <div className="relative w-full h-full overflow-hidden rounded-lg">
+                    <Image
+                      src={imageError 
+                        ? `https://source.unsplash.com/featured/600x600/?electric,motorcycle,${activeModel.name.toLowerCase()}`
+                        : modelImagePath
+                      }
+                      alt={`${activeModel.name} - Wedison Electric Motorcycle`}
+                      fill
+                      className="object-contain"
+                      priority={activeTab === 0}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      onError={() => setImageError(true)}
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Right: Details */}
-              <div className="p-6 md:p-8 space-y-6">
+              <div className="p-4 sm:p-6 md:p-8 space-y-6">
                 {/* Header */}
                 <div>
                   <div className={`inline-block ${activeModel.badgeColor || 'bg-electric-blue'} text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-3`}>
@@ -224,18 +225,18 @@ export default function ModelsTabSection() {
                 </div>
 
                 {/* Quick Specs */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   {specs.slice(0, 4).map((spec, index) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-xl ${
+                      className={`p-3 sm:p-4 rounded-xl overflow-hidden ${
                         spec.highlight
                           ? 'bg-electric-blue/10 border-2 border-electric-blue/20'
                           : 'bg-slate-100'
                       }`}
                     >
-                      <div className="text-xs text-slate-600 mb-1">{spec.label}</div>
-                      <div className={`text-lg font-bold ${
+                      <div className="text-xs text-slate-600 mb-1 truncate">{spec.label}</div>
+                      <div className={`text-base sm:text-lg font-bold truncate ${
                         spec.highlight ? 'text-electric-blue' : 'text-slate-800'
                       }`}>
                         {spec.value}
@@ -290,8 +291,8 @@ export default function ModelsTabSection() {
 
                 {/* Financing Link */}
                 <div className="bg-gradient-to-br from-success-green/10 to-emerald-100 rounded-xl p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-slate-800">Tertarik dengan model ini?</p>
                       <p className="text-xs text-slate-600">Lihat harga, DP, dan simulasi cicilan</p>
                     </div>
@@ -299,6 +300,7 @@ export default function ModelsTabSection() {
                       href="#financing"
                       variant="outline"
                       size="medium"
+                      className="flex-shrink-0 w-full sm:w-auto"
                     >
                       Lihat Harga & Cicilan
                     </Button>

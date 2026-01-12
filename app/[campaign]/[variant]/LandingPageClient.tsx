@@ -48,7 +48,7 @@ export default function LandingPageClient({ campaign, variant, config }: Landing
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white overflow-x-hidden">
       <Navbar />
       
       {/* Render sections in order defined by config */}

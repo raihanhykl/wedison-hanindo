@@ -22,9 +22,8 @@ export default function ShowroomSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
           <span className="inline-block px-4 py-2 bg-electric-blue/10 text-electric-blue rounded-full text-sm font-semibold mb-4">
@@ -42,9 +41,8 @@ export default function ShowroomSection() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left: Map Placeholder */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+          animate={{ opacity: 1, x: 0 }}
             className="relative aspect-[4/3] lg:aspect-auto lg:h-full min-h-[300px] rounded-3xl overflow-hidden bg-slate-200"
           >
             {/* Map Iframe */}
@@ -71,9 +69,8 @@ export default function ShowroomSection() {
 
           {/* Right: Info */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+          animate={{ opacity: 1, x: 0 }}
             className="space-y-6"
           >
             {/* Address Card */}

@@ -41,13 +41,7 @@ const AUTOPLAY_INTERVAL = 5000
 export default function HeroSection({ config }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [isMounted, setIsMounted] = useState(false)
   const { hero } = config
-
-  // Ensure component is mounted before showing animations
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   // Navigate to next slide
   const nextSlide = useCallback(() => {
@@ -110,7 +104,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {hero.highlightBadge && (
           <motion.div
             initial={false}
-            animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="inline-block mb-6"
           >
@@ -124,7 +118,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {/* Headline */}
         <motion.h1
           initial={false}
-          animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
         >
@@ -134,7 +128,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {/* Subheadline */}
         <motion.p
           initial={false}
-          animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-lg md:text-xl lg:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto"
         >
@@ -144,7 +138,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {/* Quick Stats */}
         <motion.div
           initial={false}
-          animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-wrap justify-center gap-4 md:gap-8 mb-8"
         >
@@ -167,7 +161,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
         {/* ===== PROMO BANNER SLIDER ===== */}
         <motion.div
           initial={false}
-          animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
           className="relative w-full max-w-3xl mx-auto mb-8"
         >

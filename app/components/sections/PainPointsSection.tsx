@@ -10,9 +10,8 @@ export default function PainPointsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12 md:mb-16"
         >
           <span className="inline-block px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm font-semibold mb-4">
@@ -28,9 +27,8 @@ export default function PainPointsSection() {
           
           {/* Card 1 - BBM (Large) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
             className="col-span-2 row-span-2 relative group"
           >
@@ -69,9 +67,8 @@ export default function PainPointsSection() {
 
           {/* Card 2 - Charging Time */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             className="col-span-1 aspect-square relative group"
           >
@@ -86,9 +83,8 @@ export default function PainPointsSection() {
 
           {/* Card 3 - Komisi */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
             className="col-span-1 aspect-square relative group"
           >
@@ -103,9 +99,8 @@ export default function PainPointsSection() {
 
           {/* Card 4 - Maintenance */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
             className="col-span-1 aspect-square relative group"
           >
@@ -120,9 +115,8 @@ export default function PainPointsSection() {
 
           {/* Card 5 - Stress Visual */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
             className="col-span-1 aspect-square relative group"
           >
@@ -147,9 +141,8 @@ export default function PainPointsSection() {
 
         {/* Arrow Transition */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="flex justify-center my-8 md:my-12"
         >
           <motion.div
@@ -165,17 +158,15 @@ export default function PainPointsSection() {
 
         {/* Solution Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="relative"
         >
           {/* Header */}
           <div className="text-center mb-8">
             <motion.div
-              initial={{ scale: 0.9 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
+              initial={false}
+              animate={{ scale: 1 }}
               className="inline-flex items-center gap-2 bg-electric-blue/10 text-electric-blue px-5 py-2.5 rounded-full text-base md:text-lg font-bold"
             >
               <BsLightningChargeFill className="text-lg" />
@@ -188,9 +179,8 @@ export default function PainPointsSection() {
             
             {/* Solution 1 - Hemat */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               whileHover={{ scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-success-green to-emerald-500 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-success-green/20"
@@ -204,9 +194,8 @@ export default function PainPointsSection() {
 
             {/* Solution 2 - Fast Charge */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               whileHover={{ scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-electric-blue to-secondary-teal rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
@@ -220,9 +209,8 @@ export default function PainPointsSection() {
 
             {/* Solution 3 - No Service */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               whileHover={{ scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-electric-blue to-cyan-600 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-electric-blue/20"
@@ -236,9 +224,8 @@ export default function PainPointsSection() {
 
             {/* Solution 4 - ROI */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               whileHover={{ scale: 1.02, y: -4 }}
               className="col-span-1 bg-gradient-to-br from-accent-orange to-orange-500 rounded-2xl md:rounded-3xl p-5 md:p-6 text-center cursor-pointer shadow-lg shadow-accent-orange/20"
@@ -255,9 +242,8 @@ export default function PainPointsSection() {
 
           {/* CTA Button */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className="mt-10 md:mt-12 text-center"
           >

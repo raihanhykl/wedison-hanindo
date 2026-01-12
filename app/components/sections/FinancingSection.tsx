@@ -209,9 +209,8 @@ export default function FinancingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
           <span className="inline-block px-4 py-2 bg-success-green/20 text-success-green rounded-full text-sm font-semibold mb-4">
@@ -234,9 +233,8 @@ export default function FinancingSection() {
           {/* Payment Type Tabs */}
           <motion.div
             className="inline-flex bg-white/10 rounded-2xl p-1.5 border border-white/20 gap-1"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={false}
+          animate={{ opacity: 1, y: 0 }}
           >
             <motion.button
               onClick={() => setPaymentType('cicilan')}
@@ -296,10 +294,9 @@ export default function FinancingSection() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Left: Calculator */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/10"
+              initial={false}
+          animate={{ opacity: 1, x: 0 }}
+              className="bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 md:p-8 border border-white/10"
             >
               <h3 className="text-2xl font-bold mb-6">Kalkulator Cicilan</h3>
 
@@ -472,13 +469,12 @@ export default function FinancingSection() {
 
             {/* Right: Results */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+          animate={{ opacity: 1, x: 0 }}
               className="space-y-6"
             >
               {/* Monthly Payment Card */}
-              <div className="bg-gradient-to-br from-success-green to-emerald-600 rounded-3xl p-6 md:p-8 text-center">
+              <div className="bg-gradient-to-br from-success-green to-emerald-600 rounded-3xl p-4 sm:p-6 md:p-8 text-center ">
                 <p className="text-white/80 mb-2">Cicilan per Bulan</p>
                 <div className="text-5xl md:text-6xl font-bold mb-2">
                   Rp {monthlyPayment.toLocaleString('id-ID')}
@@ -489,22 +485,22 @@ export default function FinancingSection() {
               </div>
 
               {/* Comparison */}
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 md:p-8 border border-white/10">
                 <h4 className="text-lg font-semibold mb-4">Perbandingan Biaya Bulanan</h4>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Cicilan Motor</span>
-                    <span className="font-bold text-red-400">Rp {monthlyPayment.toLocaleString('id-ID')}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-300 text-sm sm:text-base truncate">Cicilan Motor</span>
+                    <span className="font-bold text-red-400 text-sm sm:text-base flex-shrink-0">Rp {monthlyPayment.toLocaleString('id-ID')}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Hemat BBM (estimasi)</span>
-                    <span className="font-bold text-success-green">- Rp {monthlySavings.toLocaleString('id-ID')}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-300 text-sm sm:text-base truncate">Hemat BBM (estimasi)</span>
+                    <span className="font-bold text-success-green text-sm sm:text-base flex-shrink-0">- Rp {monthlySavings.toLocaleString('id-ID')}</span>
                   </div>
                   <div className="border-t border-white/20 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">Biaya Bersih/Bulan</span>
-                      <span className={`text-2xl font-bold ${netMonthlyCost <= 0 ? 'text-success-green' : 'text-white'}`}>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold text-sm sm:text-base truncate">Biaya Bersih/Bulan</span>
+                      <span className={`text-lg sm:text-2xl font-bold flex-shrink-0 ${netMonthlyCost <= 0 ? 'text-success-green' : 'text-white'}`}>
                         {netMonthlyCost <= 0 ? 'GRATIS!' : `Rp ${netMonthlyCost.toLocaleString('id-ID')}`}
                       </span>
                     </div>
@@ -551,10 +547,9 @@ export default function FinancingSection() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Left: Model Selection */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/10"
+              initial={false}
+          animate={{ opacity: 1, x: 0 }}
+              className="bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 md:p-8 border border-white/10"
             >
               <h3 className="text-2xl font-bold mb-6">Pilih Model</h3>
 
@@ -675,39 +670,38 @@ export default function FinancingSection() {
 
             {/* Right: Cash Price Results */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              initial={false}
+          animate={{ opacity: 1, x: 0 }}
               className="space-y-6"
             >
               {/* Final Price Card */}
-              <div className="bg-gradient-to-br from-electric-blue to-blue-600 rounded-3xl p-6 md:p-8 text-center">
+              <div className="bg-gradient-to-br from-electric-blue to-blue-600 rounded-3xl p-4 sm:p-6 md:p-8 text-center">
                 <p className="text-white/80 mb-2">Harga Cash</p>
-                <div className="text-4xl md:text-5xl font-bold mb-2">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
                   Rp {cashData?.finalPrice.toLocaleString('id-ID') || '-'}
                 </div>
-                <p className="text-white/80">
+                <p className="text-white/80 text-sm sm:text-base">
                   {selectedModel.name} {selectedVariant === 'extended' && selectedModel.hasExtended ? 'Extended Range' : ''}
                 </p>
               </div>
 
               {/* Price Breakdown */}
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 md:p-8 border border-white/10">
                 <h4 className="text-lg font-semibold mb-4">Rincian Harga</h4>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Harga OTR</span>
-                    <span className="font-bold text-white">Rp {cashData?.otr.toLocaleString('id-ID') || '-'}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-300 text-sm sm:text-base truncate">Harga OTR</span>
+                    <span className="font-bold text-white text-sm sm:text-base flex-shrink-0">Rp {cashData?.otr.toLocaleString('id-ID') || '-'}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Diskon Cash</span>
-                    <span className="font-bold text-success-green">- Rp {cashData?.discount.toLocaleString('id-ID') || '-'}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-300 text-sm sm:text-base truncate">Diskon Cash</span>
+                    <span className="font-bold text-success-green text-sm sm:text-base flex-shrink-0">- Rp {cashData?.discount.toLocaleString('id-ID') || '-'}</span>
                   </div>
                   <div className="border-t border-white/20 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">Harga Final</span>
-                      <span className="text-2xl font-bold text-electric-blue">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold text-sm sm:text-base truncate">Harga Final</span>
+                      <span className="text-lg sm:text-2xl font-bold text-electric-blue flex-shrink-0">
                         Rp {cashData?.finalPrice.toLocaleString('id-ID') || '-'}
                       </span>
                     </div>
