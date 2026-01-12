@@ -148,10 +148,7 @@ export default function ModelsTabSection() {
                     }`}>
                       {model.name}
                     </h3>
-                    <p className="text-sm text-slate-500 mb-2">{model.range}</p>
-                    <p className="text-xs text-success-green">
-                      Hemat ~Rp {(modelSavings / 1000).toFixed(0)}rb/bulan
-                    </p>
+                    <p className="text-sm text-slate-500">{model.range}</p>
                   </div>
                 </button>
               )
@@ -211,11 +208,6 @@ export default function ModelsTabSection() {
                     sizes="(max-width: 768px) 100vw, 50vw"
                     onError={() => setImageError(true)}
                   />
-                </div>
-                
-                {/* Savings Badge */}
-                <div className="absolute top-4 left-4 bg-success-green text-white px-4 py-2 rounded-full shadow-lg">
-                  <span className="font-bold">Hemat ~Rp {(monthlySavings / 1000).toFixed(0)}rb/bulan</span>
                 </div>
               </div>
 
