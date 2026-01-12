@@ -166,8 +166,8 @@ export default function HeroSection({ config }: HeroSectionProps) {
 
         {/* ===== PROMO BANNER SLIDER ===== */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={false}
+          animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
           className="relative w-full max-w-3xl mx-auto mb-8"
         >
