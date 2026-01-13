@@ -6,7 +6,7 @@ import { FiUser, FiPhone, FiMapPin, FiSend, FiCheck, FiCreditCard } from 'react-
 import { BsWhatsapp } from 'react-icons/bs'
 import { MODEL_SPECS } from '@/utils/modelSpecs'
 import { WHATSAPP_LINKS, getWhatsAppLink } from '@/utils/whatsappLinks'
-import { trackWhatsAppClick } from '@/utils/analytics'
+import { trackWhatsAppClick, trackLeadFormSubmit } from '@/utils/analytics'
 
 interface FormData {
   name: string
@@ -56,6 +56,9 @@ export default function LeadFormSection() {
         throw new Error(data.error || data.details || 'Failed to submit')
       }
 
+      // Track successful form submission
+      trackLeadFormSubmit(formData.program, formData.model)
+      
       setIsSubmitted(true)
       setFormData({
         name: '',

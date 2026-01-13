@@ -53,3 +53,16 @@ export const trackVideoPlay = (videoName: string) => {
 export const trackSectionView = (sectionName: string) => {
   trackEvent('view', 'Section', sectionName)
 }
+
+export const trackLeadFormSubmit = (program: string, model?: string) => {
+  trackEvent('submit', 'LeadForm', program, model ? 1 : 0)
+  
+  // Also push detailed lead data for GTM
+  if (typeof window !== 'undefined' && (window as any).dataLayer) {
+    (window as any).dataLayer.push({
+      event: 'leadFormSubmit',
+      leadProgram: program,
+      leadModel: model || '',
+    })
+  }
+}
