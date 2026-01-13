@@ -3,16 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 // Edge Runtime configuration for Cloudflare Pages
 export const runtime = 'edge'
 
+// Google Apps Script Web App URL
+// This URL is safe to expose - it's protected by Google's authentication
+const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json()
 
-    // Get Google Sheets Web App URL from environment variable
-    const webAppUrl = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEB_APP_URL
+    // Get Google Sheets Web App URL - use hardcoded value or env variable
+    const webAppUrl = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEB_APP_URL || GOOGLE_SHEETS_WEB_APP_URL
 
     if (!webAppUrl) {
       console.error('❌ GOOGLE_SHEETS_WEB_APP_URL is not configured')
-      console.error('Please add NEXT_PUBLIC_GOOGLE_SHEETS_WEB_APP_URL to .env.local')
       return NextResponse.json(
         { 
           error: 'Server configuration error: Google Sheets URL not configured',
