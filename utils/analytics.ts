@@ -8,7 +8,7 @@
 //
 // READ MORE: docs/GTM_SETUP_GUIDE.md
 
-export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-XXXXXXX' // Replace with actual GTM ID
+export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NRFXB3GJ'
 
 // Optional: Google Analytics 4 Measurement ID
 export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || '' // Format: G-XXXXXXXXXX
