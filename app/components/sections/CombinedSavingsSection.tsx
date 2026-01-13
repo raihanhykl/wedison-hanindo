@@ -259,6 +259,18 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
     ? MODEL_SPECS.find((m) => m.id === selectedModel)?.extendedId || selectedModel
     : selectedModel
 
+  // Helper function to get range based on model and variant
+  const getModelRange = (modelId: string, variant: 'regular' | 'extended'): string => {
+    if (variant === 'extended') {
+      const mainModel = MODEL_SPECS.find(m => m.id === modelId)
+      if (mainModel?.hasExtended) {
+        const extendedModel = MODEL_SPECS.find(m => m.id === mainModel.extendedId)
+        return extendedModel?.range || MODEL_SPECS.find(m => m.id === modelId)?.range || '0 km'
+      }
+    }
+    return MODEL_SPECS.find(m => m.id === modelId)?.range || '0 km'
+  }
+
   const fuelEfficiency = 40
   const electricEfficiency = MODEL_EFFICIENCY[actualModelId] || MODEL_EFFICIENCY['edpower']
 
@@ -498,7 +510,7 @@ export default function CombinedSavingsSection({ config }: CombinedSavingsSectio
                             selectedModel === model.id ? 'text-white/90' : 'text-slate-200'
                           }`}>
                             <FiBattery className="text-xs" />
-                            {model.range}
+                            {getModelRange(model.id, selectedVariant)}
                           </div>
                           
                           {/* Selected Indicator */}

@@ -204,6 +204,15 @@ export default function FinancingSection() {
   const cashKey = actualModelId
   const cashData = CASH_DATA[cashKey]
 
+  // Helper function to get price based on model and variant
+  const getModelPrice = (model: typeof mainModels[0], variant: 'regular' | 'extended'): string => {
+    if (variant === 'extended' && model.hasExtended) {
+      const extendedModel = MODEL_SPECS.find(m => m.id === model.extendedId)
+      return extendedModel?.price || model.price
+    }
+    return model.price
+  }
+
   return (
     <section id="financing" className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -318,7 +327,13 @@ export default function FinancingSection() {
                     return (
                       <motion.button
                         key={model.id}
-                        onClick={() => setSelectedModel(model)}
+                        onClick={() => {
+                          setSelectedModel(model)
+                          // Reset to regular if model doesn't have extended
+                          if (!model.hasExtended) {
+                            setSelectedVariant('regular')
+                          }
+                        }}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className={`relative overflow-hidden rounded-2xl border-2 transition-all ${
@@ -352,7 +367,7 @@ export default function FinancingSection() {
                           <div className={`text-sm font-medium ${
                             selectedModel.id === model.id ? 'text-white/90' : 'text-slate-300'
                           }`}>
-                            {model.price}
+                            {getModelPrice(model, selectedVariant)}
                           </div>
                           
                           {/* Selected Indicator */}
@@ -371,7 +386,7 @@ export default function FinancingSection() {
                   })}
                 </div>
                 
-                {/* Variant toggle */}
+                {/* Variant toggle - only show for models with extended */}
                 {selectedModel.hasExtended && (
                   <div className="flex gap-2 mt-3">
                     <button
@@ -568,7 +583,13 @@ export default function FinancingSection() {
                     return (
                       <motion.button
                         key={model.id}
-                        onClick={() => setSelectedModel(model)}
+                        onClick={() => {
+                          setSelectedModel(model)
+                          // Reset to regular if model doesn't have extended
+                          if (!model.hasExtended) {
+                            setSelectedVariant('regular')
+                          }
+                        }}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className={`relative overflow-hidden rounded-2xl border-2 transition-all ${
@@ -602,7 +623,7 @@ export default function FinancingSection() {
                           <div className={`text-sm font-medium ${
                             selectedModel.id === model.id ? 'text-white/90' : 'text-slate-300'
                           }`}>
-                            {model.range}
+                            {getModelPrice(model, selectedVariant)}
                           </div>
                           
                           {/* Selected Indicator */}
@@ -621,7 +642,7 @@ export default function FinancingSection() {
                   })}
                 </div>
                 
-                {/* Variant toggle */}
+                {/* Variant toggle - only show for models with extended */}
                 {selectedModel.hasExtended && (
                   <div className="flex gap-2 mt-3">
                     <button

@@ -1,6 +1,6 @@
 // WhatsApp Pre-filled Message Templates
 
-const WHATSAPP_NUMBER = '62XXXXXXXXXX' // Replace with actual number
+const WHATSAPP_NUMBER = '6282124657804' // Wedison WhatsApp Support
 
 export const getWhatsAppLink = (message: string): string => {
   const encodedMessage = encodeURIComponent(message)
@@ -13,13 +13,13 @@ export const WHATSAPP_MESSAGES = {
   
   testDrive: 'Saya ingin test drive di showroom Pondok Indah. Slot preferensi saya: [Hari/Jam]',
   
-  edpower: 'Halo! Saya tertarik dengan model EdPower (Rp 45.5jt). Bisa info detail spesifikasi dan promo yang sedang berlaku?',
+  edpower: 'Halo! Saya tertarik dengan model EdPower (Rp 45.9jt). Bisa info detail spesifikasi dan promo yang sedang berlaku?',
   
-  athena: 'Halo! Saya tertarik dengan model Athena (Rp 28jt). Bisa info detail spesifikasi dan opsi cicilan?',
+  athena: 'Halo! Saya tertarik dengan model Athena (Rp 28.7jt). Bisa info detail spesifikasi dan opsi cicilan?',
   
-  victory: 'Halo! Saya tertarik dengan model Victory (Rp 22.5jt). Bisa info detail dan promo yang tersedia?',
+  victory: 'Halo! Saya tertarik dengan model Victory (Rp 28.4jt). Bisa info detail dan promo yang tersedia?',
   
-  bees: 'Halo! Saya tertarik dengan model Bees (Rp 15jt). Ada student discount? Tolong info lengkapnya.',
+  bees: 'Halo! Saya tertarik dengan model Bees (Rp 15.9jt). Ada student discount? Tolong info lengkapnya.',
   
   financing: 'Halo! Saya mau konsultasi tentang opsi financing dan cicilan 0%. Bisa bantu?',
   

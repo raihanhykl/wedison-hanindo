@@ -13,12 +13,12 @@ export const COLORS = {
 
 // Contact Information
 export const CONTACT = {
-  phone: '+62-XXX-XXXX-XXXX',
-  whatsapp: '+62XXXXXXXXXX',
-  email: 'contact@wedison.co',
+  phone: '0821-2465-7804',
+  whatsapp: '+6282124657804',
+  email: 'Support@wedison.co',
   showroomAddress: 'Jl. Arteri Pondok Indah No. 30A-C, Jakarta Selatan',
   showroomHours: {
-    weekday: 'Senin - Jumat: 09:00 - 18:00',
+    weekday: 'Senin - Jumat: 10:00 - 18:00',
     weekend: 'Sabtu - Minggu: 10:00 - 17:00',
   },
 }
@@ -27,42 +27,42 @@ export const CONTACT = {
 export const MODELS = {
   edpower: {
     name: 'EdPower',
-    price: 'Rp 45,500,000',
+    price: 'Rp 45,900,000',
     dp: 'Rp 10,000,000',
     monthly: 'Rp 1,200,000',
-    range: '135 km',
-    battery: '70Ah',
+    range: '160 km',
+    battery: '66Ah',
   },
   athena: {
     name: 'Athena',
-    price: 'Rp 28,000,000',
+    price: 'Rp 28,700,000',
     dp: 'Rp 6,000,000',
     monthly: 'Rp 700,000',
-    range: '100 km',
-    battery: '45Ah',
+    range: '110 km',
+    battery: '33Ah',
   },
   victory: {
     name: 'Victory',
-    price: 'Rp 22,500,000',
+    price: 'Rp 28,400,000',
     dp: 'Rp 5,000,000',
     monthly: 'Rp 550,000',
-    range: '100 km',
-    battery: '45Ah',
+    range: '110 km',
+    battery: '33Ah',
   },
   bees: {
     name: 'Bees',
-    price: 'Rp 15,000,000',
+    price: 'Rp 15,900,000',
     dp: 'Rp 3,000,000',
     monthly: 'Rp 400,000',
     range: '80 km',
-    battery: '30Ah',
+    battery: '25Ah',
   },
 }
 
 // Key Features
 export const KEY_FEATURES = [
   { icon: '⚡', text: '15 menit charge', value: '10-80%' },
-  { icon: '🔋', text: 'Range', value: '135 km' },
+  { icon: '🔋', text: 'Range', value: '160 km' },
   { icon: '💨', text: 'Emisi', value: '0%' },
   { icon: '🛡️', text: 'Garansi', value: '3 tahun' },
 ]
