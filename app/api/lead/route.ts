@@ -4,83 +4,60 @@ import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'edge'
 
 // Google Apps Script Web App URL
-// This URL is safe to expose - it's protected by Google's authentication
 const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json()
 
-    // Get Google Sheets Web App URL - use hardcoded value or env variable
-    const webAppUrl = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEB_APP_URL || GOOGLE_SHEETS_WEB_APP_URL
-
-    if (!webAppUrl) {
-      console.error('❌ GOOGLE_SHEETS_WEB_APP_URL is not configured')
-      return NextResponse.json(
-        { 
-          error: 'Server configuration error: Google Sheets URL not configured',
-          details: 'Please set NEXT_PUBLIC_GOOGLE_SHEETS_WEB_APP_URL in environment variables'
-        },
-        { status: 500 }
-      )
-    }
-
-    console.log('📤 Sending data to Google Sheets:', {
-      url: webAppUrl,
-      data: { ...formData, phone: formData.phone ? '[REDACTED]' : '' }
-    })
+    const webAppUrl = GOOGLE_SHEETS_WEB_APP_URL
 
     // Send data to Google Apps Script Web App
+    // Google Apps Script does redirects, so we need to follow them
     const response = await fetch(webAppUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain', // Use text/plain to avoid CORS preflight
       },
       body: JSON.stringify(formData),
+      redirect: 'follow',
     })
+
+    const responseText = await response.text()
 
     // Try to parse JSON response
     let result
-    const responseText = await response.text()
     try {
       result = responseText ? JSON.parse(responseText) : { success: false }
-    } catch (parseError) {
-      console.error('❌ Failed to parse Google Sheets response:', parseError)
-      console.error('Response text:', responseText)
+    } catch {
+      // If response is not JSON, check if it contains success indicators
+      if (responseText.includes('success') || responseText.includes('berhasil')) {
+        return NextResponse.json(
+          { success: true, message: 'Data berhasil disimpan' },
+          { status: 200 }
+        )
+      }
       return NextResponse.json(
-        { error: 'Invalid response from Google Sheets', details: responseText },
+        { error: 'Invalid response from Google Sheets', details: responseText.substring(0, 200) },
         { status: 500 }
       )
     }
 
-    if (!response.ok || !result.success) {
-      console.error('❌ Google Sheets API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        result
-      })
+    if (result.success) {
       return NextResponse.json(
-        { 
-          error: result.error || 'Failed to save data to Google Sheets',
-          details: result
-        },
-        { status: response.status || 500 }
+        { success: true, message: 'Data berhasil disimpan' },
+        { status: 200 }
       )
     }
 
-    console.log('✅ Data successfully saved to Google Sheets')
     return NextResponse.json(
-      { success: true, message: 'Data berhasil disimpan' },
-      { status: 200 }
+      { error: result.error || 'Failed to save data', details: result },
+      { status: 500 }
     )
   } catch (error) {
-    console.error('❌ Lead form submission error:', error)
-    console.error('Error details:', error instanceof Error ? error.message : String(error))
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Internal server error', details: errorMessage },
       { status: 500 }
     )
   }
