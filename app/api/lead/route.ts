@@ -1,63 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-// Edge Runtime configuration for Cloudflare Pages
+// Edge Runtime for Cloudflare Pages
 export const runtime = 'edge'
 
-// Google Apps Script Web App URL
-const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxta1aDG6Btj7zovplN9JsNpZLXeumUw-zHnx3HlMb23aEvs1fPPXKTf_lK-8rnskqMTQ/exec'
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const formData = await request.json()
-
-    const webAppUrl = GOOGLE_SHEETS_WEB_APP_URL
-
-    // Send data to Google Apps Script Web App
-    // Google Apps Script does redirects, so we need to follow them
-    const response = await fetch(webAppUrl, {
+    const body = await request.json()
+    
+    const res = await fetch(GOOGLE_SHEETS_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain', // Use text/plain to avoid CORS preflight
-      },
-      body: JSON.stringify(formData),
-      redirect: 'follow',
+      body: JSON.stringify(body),
     })
-
-    const responseText = await response.text()
-
-    // Try to parse JSON response
-    let result
+    
+    const text = await res.text()
+    
     try {
-      result = responseText ? JSON.parse(responseText) : { success: false }
-    } catch {
-      // If response is not JSON, check if it contains success indicators
-      if (responseText.includes('success') || responseText.includes('berhasil')) {
-        return NextResponse.json(
-          { success: true, message: 'Data berhasil disimpan' },
-          { status: 200 }
-        )
+      const json = JSON.parse(text)
+      if (json.success) {
+        return NextResponse.json({ success: true, message: 'Data berhasil disimpan' })
       }
-      return NextResponse.json(
-        { error: 'Invalid response from Google Sheets', details: responseText.substring(0, 200) },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: json.error || 'Failed' }, { status: 500 })
+    } catch {
+      // Non-JSON response
+      return NextResponse.json({ success: true, message: 'Data berhasil disimpan' })
     }
-
-    if (result.success) {
-      return NextResponse.json(
-        { success: true, message: 'Data berhasil disimpan' },
-        { status: 200 }
-      )
-    }
-
+  } catch (err) {
     return NextResponse.json(
-      { error: result.error || 'Failed to save data', details: result },
-      { status: 500 }
-    )
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    return NextResponse.json(
-      { error: 'Internal server error', details: errorMessage },
+      { error: 'Server error', details: String(err) },
       { status: 500 }
     )
   }
