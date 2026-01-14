@@ -52,7 +52,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               className="flex items-center"
             >
-              <Logo size="large" showText={false} />
+              <Logo size="large" />
             </motion.div>
             
             {/* Desktop Navigation */}
