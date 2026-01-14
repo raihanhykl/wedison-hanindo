@@ -18,7 +18,7 @@ const QUICK_LINKS = [
 
 const SOCIAL_LINKS = [
   { icon: BsInstagram, href: 'https://instagram.com/Wedison.ID', label: 'Instagram' },
-  { icon: BsFacebook, href: 'https://www.facebook.com/profile.php?id=61562726390879', label: 'Facebook' },
+  { icon: BsFacebook, href: 'https://www.facebook.com/p/wedisonid-61562726390879/', label: 'Facebook' },
   { icon: BsYoutube, href: 'https://youtube.com/@WedisonID', label: 'Youtube' },
 ]
 
