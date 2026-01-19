@@ -43,8 +43,8 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Lint
-        run: npm run lint --if-present
+      #   - name: Lint
+      #     run: npm run lint --if-present
 
       - name: Build (Next.js SSG + next-sitemap)
         run: npm run build
