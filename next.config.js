@@ -20,9 +20,11 @@ const nextConfig = {
       },
     ],
     // Enable image optimization for static export
-    unoptimized: process.env.NODE_ENV === "development",
+    // unoptimized: process.env.NODE_ENV === "development",
+    unoptimized: true,
   },
   output: "export",
+  trailingSlash: true,
   // Performance optimizations
   poweredByHeader: false,
   compress: true,
