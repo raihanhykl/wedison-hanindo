@@ -64,9 +64,9 @@ const extractPriceValue = (priceString: string): number | undefined => {
 
 // Helper function to format TikTok contents array
 const formatTikTokContents = (
+  contentName: string,
   contentId?: string,
-  contentType: string = 'product',
-  contentName: string
+  contentType: string = 'product'
 ): Array<{
   content_id: string
   content_type: string
@@ -88,9 +88,9 @@ export const trackWhatsAppClick = (source: string) => {
   // Track to TikTok as Lead event with proper format
   trackTikTokEvent('Lead', {
     contents: formatTikTokContents(
+      `WhatsApp Contact - ${source}`,
       `whatsapp-${source}`,
-      'product',
-      `WhatsApp Contact - ${source}`
+      'product'
     ),
     currency: 'IDR',
   })
@@ -128,9 +128,9 @@ export const trackLeadFormSubmit = (program: string, model?: string) => {
   
   const eventParams: Record<string, any> = {
     contents: formatTikTokContents(
+      contentName,
       model || `form-${program}`,
-      'product',
-      contentName
+      'product'
     ),
     currency: 'IDR',
   }
