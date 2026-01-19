@@ -1,0 +1,77 @@
+name: CI/CD - Hanindo x Wedison
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: Hanindo-Wedison-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 20
+  BUILD_DIR: out
+  REMOTE_DIR: /domains/wedison.co/public_html/promo-awal-tahun
+  WEBSITE_URL: https://promo-awal-tahun.wedison.co/
+
+jobs:
+  ci:
+    name: Build & Deploy to Hostinger (FTP)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    env:
+      TAILWIND_DISABLE_OXIDE: "1"
+
+    environment:
+      name: production
+      url: ${{ env.WEBSITE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Build (Next.js SSG + next-sitemap)
+        run: npm run build
+
+      - name: Copy sitemap/robots to out (post-build)
+        shell: bash
+        run: |
+          mkdir -p "${BUILD_DIR}"
+          shopt -s nullglob || true
+          for f in public/robots.txt public/sitemap*.xml public/*.xml.gz; do
+            if [ -f "$f" ]; then
+              cp -f "$f" "${BUILD_DIR}/"
+            fi
+          done
+
+      - name: FTP Deploy (preserve .htaccess)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          local-dir: ${{ env.BUILD_DIR }}/
+          server-dir: ${{ env.REMOTE_DIR }}/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+            **/.htaccess
+            .htaccess
